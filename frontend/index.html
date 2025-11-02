@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCM Clinical Decision Support System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>TCM Clinical Decision Support System</h1>
+            <div class="header-actions">
+                <span id="current-patient-name"></span>
+                <button id="btn-home" class="btn btn-secondary">Home</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            <!-- Home Screen -->
+            <div id="screen-home" class="screen active">
+                <div class="welcome-card">
+                    <h2>Welcome to TCM CDSS</h2>
+                    <p>Clinical Decision Support System for Traditional Chinese Medicine</p>
+                    <p><strong>Module 1: Observation (Looking) - Complete Implementation</strong></p>
+                    
+                    <div class="action-buttons">
+                        <button id="btn-new-patient" class="btn btn-primary btn-large">
+                            <span class="btn-icon">+</span> New Patient
+                        </button>
+                        <button id="btn-existing-patient" class="btn btn-secondary btn-large">
+                            <span class="btn-icon">📋</span> Existing Patient
+                        </button>
+                    </div>
+                </div>
+
+                <div class="patients-list" id="patients-list" style="display: none;">
+                    <h3>Recent Patients</h3>
+                    <div id="patients-container"></div>
+                </div>
+            </div>
+
+            <!-- New Patient Screen -->
+            <div id="screen-new-patient" class="screen">
+                <div class="form-card">
+                    <h2>New Patient Registration</h2>
+                    <form id="form-new-patient">
+                        <div class="form-group">
+                            <label for="patient-name">Patient Name *</label>
+                            <input type="text" id="patient-name" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patient-dob">Date of Birth</label>
+                                <input type="date" id="patient-dob">
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-gender">Gender</label>
+                                <select id="patient-gender">
+                                    <option value="">Select...</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patient-phone">Phone</label>
+                                <input type="tel" id="patient-phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-email">Email</label>
+                                <input type="email" id="patient-email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="chief-complaint">Chief Complaint</label>
+                            <textarea id="chief-complaint" rows="3"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="btn-cancel-patient" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Patient & Start Visit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Observation Module Screen -->
+            <div id="screen-observation" class="screen">
+                <div class="observation-container">
+                    <!-- Progress Header -->
+                    <div class="progress-header">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="progress-percentage">0%</span> Complete
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="two-column-layout">
+                        <!-- Left: Observation Form -->
+                        <div class="observation-form">
+                            <div class="section-nav">
+                                <h3>Module 1: Observation</h3>
+                                <div id="section-buttons" class="section-buttons"></div>
+                            </div>
+
+                            <div id="observation-content" class="observation-content">
+                                <!-- Dynamic content loaded here -->
+                            </div>
+
+                            <div class="form-navigation">
+                                <button id="btn-prev-section" class="btn btn-secondary">← Previous</button>
+                                <button id="btn-next-section" class="btn btn-primary">Next →</button>
+                                <button id="btn-complete-observation" class="btn btn-success" style="display: none;">Complete Observation</button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Pattern Analysis -->
+                        <div class="pattern-analysis">
+                            <div class="analysis-card">
+                                <h3>Pattern Analysis (Live)</h3>
+                                <div id="pattern-results"></div>
+                            </div>
+
+                            <div class="confidence-card">
+                                <h4>Diagnostic Confidence</h4>
+                                <div class="confidence-meter">
+                                    <div id="confidence-fill" class="confidence-fill" style="width: 0%"></div>
+                                </div>
+                                <div id="confidence-text">0% - Insufficient data</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="screen-results" class="screen">
+                <div class="results-container">
+                    <h2>Observation Complete - Pattern Analysis</h2>
+                    <div id="final-results"></div>
+                    <div class="form-actions">
+                        <button id="btn-new-visit" class="btn btn-primary">New Visit</button>
+                        <button id="btn-export-pdf" class="btn btn-secondary">Export PDF</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/observation-sections.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
