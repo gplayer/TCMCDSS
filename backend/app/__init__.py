@@ -4,7 +4,8 @@ import os
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, origins=['https://tcmcdss.pages.dev', 'https://ca255ee2.tcmcdss.pages.dev', 'https://gplayer.pythonanywhere.com'])
+
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
