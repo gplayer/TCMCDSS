@@ -1,5 +1,5 @@
 // API Configuration and Functions
-const API_BASE_URL = 'https://gplayer.pythonanywhere.com';
+const API_BASE_URL = 'https://gplayer.pythonanywhere.com/api';
 
 class API {
     static async request(endpoint, method = 'GET', data = null) {
