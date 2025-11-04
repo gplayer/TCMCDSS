@@ -24,7 +24,7 @@
                 <div class="welcome-card">
                     <h2>Welcome to TCM CDSS</h2>
                     <p>Clinical Decision Support System for Traditional Chinese Medicine</p>
-                    <p><strong>Module 1: Observation (Looking) - Complete Implementation</strong></p>
+                    <p><strong>Modules Available: 1. Observation | 2. Interrogation</strong></p>
                     
                     <div class="action-buttons">
                         <button id="btn-new-patient" class="btn btn-primary btn-large">
@@ -82,9 +82,52 @@
                         </div>
                         <div class="form-actions">
                             <button type="button" id="btn-cancel-patient" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Create Patient & Start Visit</button>
+                            <button type="submit" class="btn btn-primary">Create Patient & Start Diagnostic</button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Module Selection Screen -->
+            <div id="screen-module-select" class="screen">
+                <div class="form-card">
+                    <h2>Select Diagnostic Module</h2>
+                    <p class="module-instruction">Choose which diagnostic method to begin with. You can complete modules in any order.</p>
+                    
+                    <div class="module-cards">
+                        <div class="module-card" onclick="app.startModule('observation')">
+                            <div class="module-icon">👁️</div>
+                            <h3>Module 1: Observation (望 Wàng)</h3>
+                            <p>Visual examination of patient's physical appearance, spirit, tongue, and body features</p>
+                            <div class="module-status" id="status-observation">Not Started</div>
+                        </div>
+
+                        <div class="module-card" onclick="app.startModule('interrogation')">
+                            <div class="module-icon">💬</div>
+                            <h3>Module 2: Interrogation (問 Wèn)</h3>
+                            <p>Clinical interview covering the Ten Questions about symptoms and body functions</p>
+                            <div class="module-status" id="status-interrogation">Not Started</div>
+                        </div>
+
+                        <div class="module-card module-disabled">
+                            <div class="module-icon">🖐️</div>
+                            <h3>Module 3: Palpation (切 Qiè)</h3>
+                            <p>Pulse diagnosis and physical examination</p>
+                            <div class="module-status">Coming Soon</div>
+                        </div>
+
+                        <div class="module-card module-disabled">
+                            <div class="module-icon">👂</div>
+                            <h3>Module 4: Listening & Smelling (聞 Wén)</h3>
+                            <p>Assessment of voice, breathing, and body odor</p>
+                            <div class="module-status">Coming Soon</div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="btn-view-analysis" class="btn btn-primary" style="display: none;">View Complete Analysis</button>
+                        <button id="btn-cancel-module" class="btn btn-secondary">Back to Home</button>
+                    </div>
                 </div>
             </div>
 
@@ -94,10 +137,10 @@
                     <!-- Progress Header -->
                     <div class="progress-header">
                         <div class="progress-bar">
-                            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                            <div id="progress-fill-obs" class="progress-fill" style="width: 0%"></div>
                         </div>
                         <div class="progress-text">
-                            <span id="progress-percentage">0%</span> Complete
+                            <span id="progress-percentage-obs">0%</span> Complete
                         </div>
                     </div>
 
@@ -107,7 +150,7 @@
                         <div class="observation-form">
                             <div class="section-nav">
                                 <h3>Module 1: Observation</h3>
-                                <div id="section-buttons" class="section-buttons"></div>
+                                <div id="section-buttons-obs" class="section-buttons"></div>
                             </div>
 
                             <div id="observation-content" class="observation-content">
@@ -115,8 +158,8 @@
                             </div>
 
                             <div class="form-navigation">
-                                <button id="btn-prev-section" class="btn btn-secondary">← Previous</button>
-                                <button id="btn-next-section" class="btn btn-primary">Next →</button>
+                                <button id="btn-prev-section-obs" class="btn btn-secondary">← Previous</button>
+                                <button id="btn-next-section-obs" class="btn btn-primary">Next →</button>
                                 <button id="btn-complete-observation" class="btn btn-success" style="display: none;">Complete Observation</button>
                             </div>
                         </div>
@@ -140,12 +183,65 @@
                 </div>
             </div>
 
+            <!-- Interrogation Module Screen -->
+            <div id="screen-interrogation" class="screen">
+                <div class="observation-container">
+                    <!-- Progress Header -->
+                    <div class="progress-header">
+                        <div class="progress-bar">
+                            <div id="progress-fill-int" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="progress-percentage-int">0%</span> Complete
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="two-column-layout">
+                        <!-- Left: Interrogation Form -->
+                        <div class="observation-form">
+                            <div class="section-nav">
+                                <h3>Module 2: Interrogation (Ten Questions)</h3>
+                                <div id="section-buttons-int" class="section-buttons"></div>
+                            </div>
+
+                            <div id="interrogation-content" class="observation-content">
+                                <!-- Dynamic content loaded here -->
+                            </div>
+
+                            <div class="form-navigation">
+                                <button id="btn-prev-section-int" class="btn btn-secondary">← Previous</button>
+                                <button id="btn-next-section-int" class="btn btn-primary">Next →</button>
+                                <button id="btn-complete-interrogation" class="btn btn-success" style="display: none;">Complete Interrogation</button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Pattern Analysis -->
+                        <div class="pattern-analysis">
+                            <div class="analysis-card">
+                                <h3>Pattern Analysis (Live)</h3>
+                                <div id="pattern-results-int"></div>
+                            </div>
+
+                            <div class="confidence-card">
+                                <h4>Diagnostic Confidence</h4>
+                                <div class="confidence-meter">
+                                    <div id="confidence-fill-int" class="confidence-fill" style="width: 0%"></div>
+                                </div>
+                                <div id="confidence-text-int">0% - Insufficient data</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Results Screen -->
             <div id="screen-results" class="screen">
                 <div class="results-container">
-                    <h2>Observation Complete - Pattern Analysis</h2>
+                    <h2>Diagnostic Analysis Complete</h2>
                     <div id="final-results"></div>
                     <div class="form-actions">
+                        <button id="btn-back-to-modules" class="btn btn-secondary">Back to Modules</button>
                         <button id="btn-new-visit" class="btn btn-primary">New Visit</button>
                         <button id="btn-export-pdf" class="btn btn-secondary">Export PDF</button>
                     </div>
@@ -162,6 +258,7 @@
 
     <script src="js/api.js"></script>
     <script src="js/observation-sections.js"></script>
+    <script src="js/interrogation-sections.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

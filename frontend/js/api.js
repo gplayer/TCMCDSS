@@ -59,6 +59,19 @@ class API {
         return this.request(`/observations/visit/${visitId}/${section}`);
     }
 
+    // Interrogation APIs
+    static async getInterrogations(visitId) {
+        return this.request(`/interrogations/visit/${visitId}`);
+    }
+
+    static async saveInterrogation(visitId, section, data, completed = false) {
+        return this.request(`/interrogations/visit/${visitId}/${section}`, 'POST', { data, completed });
+    }
+
+    static async getSectionInterrogation(visitId, section) {
+        return this.request(`/interrogations/visit/${visitId}/${section}`);
+    }
+
     // Pattern Analysis APIs
     static async analyzePatterns(visitId) {
         return this.request(`/patterns/analyze/${visitId}`, 'POST');

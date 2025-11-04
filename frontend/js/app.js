@@ -1,12 +1,16 @@
-// Main Application Logic
+// Main Application Logic - With Module 1 & 2 Integration
 class TCMApp {
     constructor() {
         this.currentScreen = 'home';
         this.currentPatient = null;
         this.currentVisit = null;
+        this.currentModule = null; // 'observation' or 'interrogation'
         this.currentSection = 0;
         this.observationData = {};
-        this.completedSections = new Set();
+        this.interrogationData = {};
+        this.completedSectionsObs = new Set();
+        this.completedSectionsInt = new Set();
+        this.completedModules = new Set();
         
         this.init();
     }
@@ -26,12 +30,22 @@ class TCMApp {
         document.getElementById('form-new-patient').addEventListener('submit', (e) => this.handleNewPatient(e));
         document.getElementById('btn-cancel-patient').addEventListener('click', () => this.showScreen('home'));
 
+        // Module selection
+        document.getElementById('btn-cancel-module').addEventListener('click', () => this.showScreen('home'));
+        document.getElementById('btn-view-analysis').addEventListener('click', () => this.viewCompleteAnalysis());
+
         // Observation navigation
-        document.getElementById('btn-prev-section').addEventListener('click', () => this.navigateSection(-1));
-        document.getElementById('btn-next-section').addEventListener('click', () => this.navigateSection(1));
-        document.getElementById('btn-complete-observation').addEventListener('click', () => this.completeObservation());
+        document.getElementById('btn-prev-section-obs').addEventListener('click', () => this.navigateSection(-1, 'observation'));
+        document.getElementById('btn-next-section-obs').addEventListener('click', () => this.navigateSection(1, 'observation'));
+        document.getElementById('btn-complete-observation').addEventListener('click', () => this.completeModule('observation'));
+
+        // Interrogation navigation
+        document.getElementById('btn-prev-section-int').addEventListener('click', () => this.navigateSection(-1, 'interrogation'));
+        document.getElementById('btn-next-section-int').addEventListener('click', () => this.navigateSection(1, 'interrogation'));
+        document.getElementById('btn-complete-interrogation').addEventListener('click', () => this.completeModule('interrogation'));
 
         // Results screen
+        document.getElementById('btn-back-to-modules').addEventListener('click', () => this.showScreen('module-select'));
         document.getElementById('btn-new-visit').addEventListener('click', () => this.showScreen('home'));
     }
 
@@ -43,8 +57,39 @@ class TCMApp {
         if (screenId === 'home') {
             this.currentPatient = null;
             this.currentVisit = null;
+            this.completedModules.clear();
             document.getElementById('current-patient-name').textContent = '';
         }
+
+        if (screenId === 'module-select') {
+            this.updateModuleStatus();
+        }
+    }
+
+    updateModuleStatus() {
+        // Update observation status
+        const obsStatus = document.getElementById('status-observation');
+        if (this.completedModules.has('observation')) {
+            obsStatus.textContent = 'Completed';
+            obsStatus.classList.add('completed');
+        } else if (this.completedSectionsObs.size > 0) {
+            obsStatus.textContent = 'In Progress';
+            obsStatus.classList.add('in-progress');
+        }
+
+        // Update interrogation status
+        const intStatus = document.getElementById('status-interrogation');
+        if (this.completedModules.has('interrogation')) {
+            intStatus.textContent = 'Completed';
+            intStatus.classList.add('completed');
+        } else if (this.completedSectionsInt.size > 0) {
+            intStatus.textContent = 'In Progress';
+            intStatus.classList.add('in-progress');
+        }
+
+        // Show analysis button if any module completed
+        const viewBtn = document.getElementById('btn-view-analysis');
+        viewBtn.style.display = this.completedModules.size > 0 ? 'inline-block' : 'none';
     }
 
     showLoading(show) {
@@ -97,7 +142,7 @@ class TCMApp {
             this.currentVisit = { id: visitResponse.visit_id, chief_complaint: chiefComplaint };
             
             document.getElementById('current-patient-name').textContent = this.currentPatient.name;
-            this.startObservation();
+            this.showScreen('module-select');
         } catch (error) {
             alert('Error: ' + error.message);
         } finally {
@@ -126,7 +171,7 @@ class TCMApp {
             this.currentVisit = { id: visitResponse.visit_id, chief_complaint: chiefComplaint };
 
             document.getElementById('current-patient-name').textContent = patientData.name;
-            this.startObservation();
+            this.showScreen('module-select');
         } catch (error) {
             alert('Error creating patient: ' + error.message);
         } finally {
@@ -134,73 +179,109 @@ class TCMApp {
         }
     }
 
-    startObservation() {
+    startModule(moduleName) {
+        this.currentModule = moduleName;
         this.currentSection = 0;
-        this.observationData = {};
-        this.completedSections.clear();
-        this.showScreen('observation');
-        this.renderSectionButtons();
-        this.renderSection(0);
-        this.updateProgress();
+        
+        if (moduleName === 'observation') {
+            this.showScreen('observation');
+            this.renderSectionButtons('observation');
+            this.renderSection(0, 'observation');
+            this.updateProgress('observation');
+        } else if (moduleName === 'interrogation') {
+            this.showScreen('interrogation');
+            this.renderSectionButtons('interrogation');
+            this.renderSection(0, 'interrogation');
+            this.updateProgress('interrogation');
+        }
     }
 
-    renderSectionButtons() {
-        const container = document.getElementById('section-buttons');
-        container.innerHTML = OBSERVATION_SECTIONS.map((section, index) => `
-            <button class="section-btn ${index === this.currentSection ? 'active' : ''} ${this.completedSections.has(index) ? 'completed' : ''}"
-                    onclick="app.goToSection(${index})">
-                ${section.icon} ${section.name}
+    renderSectionButtons(module) {
+        const sections = module === 'observation' ? OBSERVATION_SECTIONS : INTERROGATION_SECTIONS;
+        const container = document.getElementById(`section-buttons-${module === 'observation' ? 'obs' : 'int'}`);
+        const completedSections = module === 'observation' ? this.completedSectionsObs : this.completedSectionsInt;
+        
+        container.innerHTML = sections.map((section, index) => `
+            <button class="section-btn ${index === this.currentSection ? 'active' : ''} ${completedSections.has(index) ? 'completed' : ''}"
+                    onclick="app.goToSection(${index}, '${module}')">
+                ${section.title}
             </button>
         `).join('');
     }
 
-    goToSection(index) {
+    goToSection(index, module) {
         this.saveCurrentSection();
         this.currentSection = index;
-        this.renderSection(index);
-        this.renderSectionButtons();
+        this.renderSection(index, module);
+        this.renderSectionButtons(module);
     }
 
-    renderSection(index) {
-        const section = OBSERVATION_SECTIONS[index];
-        const content = document.getElementById('observation-content');
+    renderSection(index, module) {
+        const sections = module === 'observation' ? OBSERVATION_SECTIONS : INTERROGATION_SECTIONS;
+        const section = sections[index];
+        const contentId = module === 'observation' ? 'observation-content' : 'interrogation-content';
+        const content = document.getElementById(contentId);
         
         let html = `
             <div class="section-content">
-                <h3>${section.icon} ${section.name}</h3>
-                <form id="observation-form">
+                <h3>${section.title}</h3>
+                <p class="section-description">${section.description}</p>
+                <form id="${module}-form">
         `;
 
         section.fields.forEach(field => {
-            html += this.renderField(field, section.id);
+            html += this.renderField(field, section.id, module);
         });
 
         html += `</form></div>`;
         content.innerHTML = html;
 
         // Load existing data
-        this.loadSectionData(section.id);
+        this.loadSectionData(section.id, module);
 
         // Update navigation buttons
-        document.getElementById('btn-prev-section').style.display = index > 0 ? 'inline-block' : 'none';
-        document.getElementById('btn-next-section').style.display = index < OBSERVATION_SECTIONS.length - 1 ? 'inline-block' : 'none';
-        document.getElementById('btn-complete-observation').style.display = index === OBSERVATION_SECTIONS.length - 1 ? 'inline-block' : 'none';
+        const suffix = module === 'observation' ? 'obs' : 'int';
+        document.getElementById(`btn-prev-section-${suffix}`).style.display = index > 0 ? 'inline-block' : 'none';
+        document.getElementById(`btn-next-section-${suffix}`).style.display = index < sections.length - 1 ? 'inline-block' : 'none';
+        document.getElementById(`btn-complete-${module}`).style.display = index === sections.length - 1 ? 'inline-block' : 'none';
     }
 
-    renderField(field, sectionId) {
-        const fieldId = `${sectionId}_${field.name}`;
+    renderField(field, sectionId, module) {
+        const fieldId = `${module}_${sectionId}_${field.id}`;
         let html = `<div class="form-section">`;
         
-        html += `<h4>${field.label}${field.required ? ' *' : ''}</h4>`;
+        html += `<h4>${field.label}</h4>`;
 
-        if (field.type === 'radio') {
+        if (field.type === 'select') {
+            html += `<select id="${fieldId}" name="${fieldId}" onchange="app.saveCurrentSection()">`;
+            field.options.forEach(option => {
+                html += `<option value="${option}">${option}</option>`;
+            });
+            html += '</select>';
+        } else if (field.type === 'multiselect') {
+            html += '<div class="checkbox-group">';
+            field.options.forEach(option => {
+                const optionId = option.replace(/[^a-zA-Z0-9]/g, '_');
+                html += `
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="${fieldId}_${optionId}" 
+                               name="${fieldId}" value="${option}"
+                               onchange="app.saveCurrentSection()">
+                        <label for="${fieldId}_${optionId}">${option}</label>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        } else if (field.type === 'textarea') {
+            html += `<textarea id="${fieldId}" name="${fieldId}" rows="3" onchange="app.saveCurrentSection()"></textarea>`;
+        } else if (field.type === 'radio') {
             html += '<div class="radio-group">';
             field.options.forEach(option => {
                 html += `
                     <div class="radio-option">
                         <input type="radio" id="${fieldId}_${option.value}" 
                                name="${fieldId}" value="${option.value}"
-                               ${field.required ? 'required' : ''}>
+                               onchange="app.saveCurrentSection()">
                         <label for="${fieldId}_${option.value}">${option.label}</label>
                     </div>
                 `;
@@ -212,119 +293,152 @@ class TCMApp {
                 html += `
                     <div class="checkbox-option">
                         <input type="checkbox" id="${fieldId}_${option.value}" 
-                               name="${fieldId}" value="${option.value}">
+                               name="${fieldId}" value="${option.value}"
+                               onchange="app.saveCurrentSection()">
                         <label for="${fieldId}_${option.value}">${option.label}</label>
                     </div>
                 `;
             });
             html += '</div>';
-        } else if (field.type === 'textarea') {
-            html += `<textarea id="${fieldId}" name="${fieldId}" rows="3"></textarea>`;
         }
 
         html += '</div>';
         return html;
     }
 
-    loadSectionData(sectionId) {
-        if (!this.observationData[sectionId]) return;
+    loadSectionData(sectionId, module) {
+        const data = module === 'observation' ? this.observationData : this.interrogationData;
+        if (!data[sectionId]) return;
 
-        const data = this.observationData[sectionId];
-        for (const [key, value] of Object.entries(data)) {
-            const fieldId = `${sectionId}_${key}`;
+        const sectionData = data[sectionId];
+        for (const [key, value] of Object.entries(sectionData)) {
+            const fieldId = `${module}_${sectionId}_${key}`;
             
             if (Array.isArray(value)) {
-                // Checkbox
+                // Multiselect checkbox
                 value.forEach(v => {
-                    const checkbox = document.getElementById(`${fieldId}_${v}`);
+                    const optionId = v.replace(/[^a-zA-Z0-9]/g, '_');
+                    const checkbox = document.getElementById(`${fieldId}_${optionId}`);
                     if (checkbox) checkbox.checked = true;
                 });
             } else {
-                // Radio or textarea
-                const radio = document.getElementById(`${fieldId}_${value}`);
-                if (radio) {
-                    radio.checked = true;
+                // Select dropdown or textarea
+                const select = document.getElementById(fieldId);
+                if (select && select.tagName === 'SELECT') {
+                    select.value = value;
+                } else if (select && select.tagName === 'TEXTAREA') {
+                    select.value = value;
                 } else {
-                    const textarea = document.getElementById(fieldId);
-                    if (textarea) textarea.value = value;
+                    // Radio button
+                    const radio = document.getElementById(`${fieldId}_${value}`);
+                    if (radio) radio.checked = true;
                 }
             }
         }
     }
 
     saveCurrentSection() {
-        const section = OBSERVATION_SECTIONS[this.currentSection];
+        if (!this.currentModule) return;
+
+        const sections = this.currentModule === 'observation' ? OBSERVATION_SECTIONS : INTERROGATION_SECTIONS;
+        const section = sections[this.currentSection];
         const formData = {};
         
         section.fields.forEach(field => {
-            const fieldId = `${section.id}_${field.name}`;
+            const fieldId = `${this.currentModule}_${section.id}_${field.id}`;
             
-            if (field.type === 'radio') {
+            if (field.type === 'select') {
+                const select = document.getElementById(fieldId);
+                if (select && select.value) formData[field.id] = select.value;
+            } else if (field.type === 'multiselect') {
+                const checked = Array.from(document.querySelectorAll(`input[name="${fieldId}"]:checked`))
+                    .map(cb => cb.value);
+                if (checked.length > 0) formData[field.id] = checked;
+            } else if (field.type === 'textarea') {
+                const textarea = document.getElementById(fieldId);
+                if (textarea && textarea.value) formData[field.id] = textarea.value;
+            } else if (field.type === 'radio') {
                 const selected = document.querySelector(`input[name="${fieldId}"]:checked`);
-                if (selected) formData[field.name] = selected.value;
+                if (selected) formData[field.id] = selected.value;
             } else if (field.type === 'checkbox') {
                 const checked = Array.from(document.querySelectorAll(`input[name="${fieldId}"]:checked`))
                     .map(cb => cb.value);
-                if (checked.length > 0) formData[field.name] = checked;
-            } else if (field.type === 'textarea') {
-                const textarea = document.getElementById(fieldId);
-                if (textarea && textarea.value) formData[field.name] = textarea.value;
+                if (checked.length > 0) formData[field.id] = checked;
             }
         });
 
-        this.observationData[section.id] = formData;
-        
-        // Mark as completed if has data
-        if (Object.keys(formData).length > 0) {
-            this.completedSections.add(this.currentSection);
+        if (this.currentModule === 'observation') {
+            this.observationData[section.id] = formData;
+            if (Object.keys(formData).length > 0) {
+                this.completedSectionsObs.add(this.currentSection);
+            }
+        } else {
+            this.interrogationData[section.id] = formData;
+            if (Object.keys(formData).length > 0) {
+                this.completedSectionsInt.add(this.currentSection);
+            }
         }
 
         // Save to backend
-        this.saveToBackend(section.id, formData);
-        this.analyzePatterns();
+        this.saveToBackend(section.id, formData, this.currentModule);
+        this.analyzePatterns(this.currentModule);
     }
 
-    async saveToBackend(section, data) {
+    async saveToBackend(section, data, module) {
         try {
-            await API.saveObservation(
-                this.currentVisit.id,
-                section,
-                data,
-                this.completedSections.has(this.currentSection)
-            );
+            if (module === 'observation') {
+                await API.saveObservation(
+                    this.currentVisit.id,
+                    section,
+                    data,
+                    this.completedSectionsObs.has(this.currentSection)
+                );
+            } else if (module === 'interrogation') {
+                await API.saveInterrogation(
+                    this.currentVisit.id,
+                    section,
+                    data,
+                    this.completedSectionsInt.has(this.currentSection)
+                );
+            }
         } catch (error) {
-            console.error('Error saving observation:', error);
+            console.error(`Error saving ${module}:`, error);
         }
     }
 
-    navigateSection(direction) {
+    navigateSection(direction, module) {
         this.saveCurrentSection();
         this.currentSection += direction;
-        this.renderSection(this.currentSection);
-        this.renderSectionButtons();
-        this.updateProgress();
+        this.renderSection(this.currentSection, module);
+        this.renderSectionButtons(module);
+        this.updateProgress(module);
     }
 
-    updateProgress() {
-        const percentage = (this.completedSections.size / OBSERVATION_SECTIONS.length) * 100;
-        document.getElementById('progress-fill').style.width = percentage + '%';
-        document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
+    updateProgress(module) {
+        const sections = module === 'observation' ? OBSERVATION_SECTIONS : INTERROGATION_SECTIONS;
+        const completedSections = module === 'observation' ? this.completedSectionsObs : this.completedSectionsInt;
+        const percentage = (completedSections.size / sections.length) * 100;
+        const suffix = module === 'observation' ? 'obs' : 'int';
+        
+        document.getElementById(`progress-fill-${suffix}`).style.width = percentage + '%';
+        document.getElementById(`progress-percentage-${suffix}`).textContent = Math.round(percentage) + '%';
     }
 
-    async analyzePatterns() {
+    async analyzePatterns(module) {
         try {
             const response = await API.analyzePatterns(this.currentVisit.id);
-            this.displayPatternAnalysis(response);
+            this.displayPatternAnalysis(response, module);
         } catch (error) {
             console.error('Error analyzing patterns:', error);
         }
     }
 
-    displayPatternAnalysis(analysis) {
-        const container = document.getElementById('pattern-results');
+    displayPatternAnalysis(analysis, module) {
+        const suffix = module === 'observation' ? '' : '-int';
+        const container = document.getElementById(`pattern-results${suffix}`);
         
         if (!analysis.patterns || analysis.patterns.length === 0) {
-            container.innerHTML = '<p style="color: #999;">Enter observations to see pattern analysis...</p>';
+            container.innerHTML = '<p style="color: #999;">Enter data to see pattern analysis...</p>';
             return;
         }
 
@@ -352,21 +466,35 @@ class TCMApp {
 
         // Update confidence meter
         const confidence = analysis.overall_confidence;
-        document.getElementById('confidence-fill').style.width = confidence + '%';
-        document.getElementById('confidence-text').textContent = 
+        document.getElementById(`confidence-fill${suffix}`).style.width = confidence + '%';
+        document.getElementById(`confidence-text${suffix}`).textContent = 
             `${confidence}% - ${confidence < 50 ? 'Insufficient data' : confidence < 70 ? 'Moderate confidence' : 'Strong confidence'}`;
     }
 
-    async completeObservation() {
+    async completeModule(module) {
         this.saveCurrentSection();
+        this.completedModules.add(module);
         this.showLoading(true);
 
+        try {
+            const analysis = await API.analyzePatterns(this.currentVisit.id);
+            alert(`${module === 'observation' ? 'Observation' : 'Interrogation'} module completed! You can now continue with other modules or view the complete analysis.`);
+            this.showScreen('module-select');
+        } catch (error) {
+            alert('Error completing module: ' + error.message);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async viewCompleteAnalysis() {
+        this.showLoading(true);
         try {
             const analysis = await API.analyzePatterns(this.currentVisit.id);
             this.displayFinalResults(analysis);
             this.showScreen('results');
         } catch (error) {
-            alert('Error completing observation: ' + error.message);
+            alert('Error loading analysis: ' + error.message);
         } finally {
             this.showLoading(false);
         }
@@ -376,6 +504,14 @@ class TCMApp {
         const container = document.getElementById('final-results');
         
         let html = '<h3>Pattern Analysis Results</h3>';
+        
+        // Module completion status
+        html += '<div class="completion-status">';
+        html += '<h4>Completed Modules:</h4>';
+        html += '<ul>';
+        if (this.completedModules.has('observation')) html += '<li>✓ Module 1: Observation</li>';
+        if (this.completedModules.has('interrogation')) html += '<li>✓ Module 2: Interrogation</li>';
+        html += '</ul></div>';
         
         html += `<div class="confidence-card">
             <h4>Overall Diagnostic Confidence: ${analysis.overall_confidence}%</h4>
