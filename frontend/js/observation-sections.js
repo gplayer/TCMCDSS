@@ -4,7 +4,7 @@
 const OBSERVATION_SECTIONS = [
     {
         id: 'posture',
-        name: 'Posture & Movement',
+        title: 'Posture & Movement',
         icon: '🚶',
         fields: [
             {
@@ -36,7 +36,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'gait',
-        name: 'Gait & Movement',
+        title: 'Gait & Movement',
         icon: '👣',
         fields: [
             {
@@ -69,7 +69,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'body_type',
-        name: 'Body Type & Constitution',
+        title: 'Body Type & Constitution',
         icon: '👤',
         fields: [
             {
@@ -101,7 +101,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'shen',
-        name: 'Shen (Spirit)',
+        title: 'Shen (Spirit)',
         icon: '✨',
         fields: [
             {
@@ -130,7 +130,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'complexion',
-        name: 'Face & Complexion',
+        title: 'Face & Complexion',
         icon: '👨',
         fields: [
             {
@@ -174,7 +174,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'tongue',
-        name: 'Tongue Examination ⭐',
+        title: 'Tongue Examination ⭐',
         icon: '👅',
         fields: [
             {
@@ -269,7 +269,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'eyes',
-        name: 'Eyes',
+        title: 'Eyes',
         icon: '👁️',
         fields: [
             {
@@ -298,7 +298,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'ears_nose',
-        name: 'Ears & Nose',
+        title: 'Ears & Nose',
         icon: '👂',
         fields: [
             {
@@ -328,7 +328,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'hair_nails',
-        name: 'Hair & Nails',
+        title: 'Hair & Nails',
         icon: '💅',
         fields: [
             {
@@ -368,7 +368,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'hands_arms',
-        name: 'Hands & Arms',
+        title: 'Hands & Arms',
         icon: '🤚',
         fields: [
             {
@@ -399,7 +399,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'legs_feet',
-        name: 'Legs & Feet',
+        title: 'Legs & Feet',
         icon: '🦵',
         fields: [
             {
@@ -426,7 +426,7 @@ const OBSERVATION_SECTIONS = [
     },
     {
         id: 'skin',
-        name: 'Skin Overall',
+        title: 'Skin Overall',
         icon: '🩹',
         fields: [
             {
