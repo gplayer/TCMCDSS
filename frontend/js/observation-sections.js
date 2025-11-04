@@ -9,7 +9,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'overall_posture',
+                id: 'overall_posture',
                 label: 'Overall Posture',
                 required: true,
                 options: [
@@ -23,7 +23,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'head_position',
+                id: 'head_position',
                 label: 'Head Position',
                 options: [
                     { value: 'normal', label: 'Normal/centered' },
@@ -41,7 +41,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'gait_pattern',
+                id: 'gait_pattern',
                 label: 'Gait Pattern',
                 required: true,
                 options: [
@@ -55,7 +55,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'movement_quality',
+                id: 'movement_quality',
                 label: 'Movement Quality',
                 options: [
                     { value: 'fluid', label: 'Fluid, balanced, harmonious' },
@@ -74,7 +74,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'build',
+                id: 'build',
                 label: 'Overall Build',
                 required: true,
                 options: [
@@ -87,7 +87,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'yin_yang_type',
+                id: 'yin_yang_type',
                 label: 'Yin-Yang Constitutional Type',
                 options: [
                     { value: 'yang_abundant', label: 'Yang Abundant: Strong, assertive, likes cool' },
@@ -106,7 +106,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'overall',
+                id: 'overall',
                 label: 'Overall Spirit Assessment',
                 required: true,
                 options: [
@@ -117,7 +117,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'eyes_luster',
+                id: 'eyes_luster',
                 label: 'Eye Luster',
                 options: [
                     { value: 'bright', label: 'Bright/Sparkling' },
@@ -135,7 +135,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'primary_color',
+                id: 'primary_color',
                 label: 'Primary Facial Color',
                 required: true,
                 options: [
@@ -150,7 +150,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'shade',
+                id: 'shade',
                 label: 'Shade/Quality (if not normal)',
                 options: [
                     { value: 'bright', label: 'Bright' },
@@ -161,7 +161,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'luster',
+                id: 'luster',
                 label: 'Facial Luster',
                 options: [
                     { value: 'shiny', label: 'Shiny/Lustrous' },
@@ -179,7 +179,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'body_color',
+                id: 'body_color',
                 label: 'Tongue Body Color',
                 required: true,
                 options: [
@@ -193,7 +193,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'body_shape',
+                id: 'body_shape',
                 label: 'Tongue Body Shape',
                 options: [
                     { value: 'normal', label: 'Normal' },
@@ -203,7 +203,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'checkbox',
-                name: 'features',
+                id: 'features',
                 label: 'Special Features (check all that apply)',
                 options: [
                     { value: 'tooth_marked', label: 'Tooth-marked edges' },
@@ -217,7 +217,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'moisture',
+                id: 'moisture',
                 label: 'Tongue Moisture',
                 options: [
                     { value: 'normal', label: 'Normal moisture' },
@@ -228,7 +228,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'coating_thickness',
+                id: 'coating_thickness',
                 label: 'Coating Thickness',
                 required: true,
                 options: [
@@ -240,7 +240,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'coating_color',
+                id: 'coating_color',
                 label: 'Coating Color',
                 options: [
                     { value: 'white', label: 'White' },
@@ -252,7 +252,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'coating_quality',
+                id: 'coating_quality',
                 label: 'Coating Quality',
                 options: [
                     { value: 'normal', label: 'Normal' },
@@ -262,7 +262,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'textarea',
-                name: 'notes',
+                id: 'notes',
                 label: 'Additional Tongue Observations'
             }
         ]
@@ -274,7 +274,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'sclera_color',
+                id: 'sclera_color',
                 label: 'Sclera Color',
                 options: [
                     { value: 'white', label: 'White/Clear (normal)' },
@@ -285,7 +285,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'checkbox',
-                name: 'features',
+                id: 'features',
                 label: 'Eye Features',
                 options: [
                     { value: 'dry', label: 'Dry eyes' },
@@ -303,7 +303,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'ear_color',
+                id: 'ear_color',
                 label: 'Ear Color (if visible)',
                 options: [
                     { value: 'normal', label: 'Normal' },
@@ -315,7 +315,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'nose_color',
+                id: 'nose_color',
                 label: 'Nose Color',
                 options: [
                     { value: 'normal', label: 'Normal' },
@@ -333,7 +333,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'hair_quality',
+                id: 'hair_quality',
                 label: 'Hair Quality',
                 options: [
                     { value: 'normal', label: 'Normal (lustrous, strong)' },
@@ -344,7 +344,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'nail_color',
+                id: 'nail_color',
                 label: 'Nail Color',
                 options: [
                     { value: 'pink', label: 'Healthy pink' },
@@ -356,7 +356,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'checkbox',
-                name: 'nail_features',
+                id: 'nail_features',
                 label: 'Nail Features',
                 options: [
                     { value: 'ridged', label: 'Ridged (longitudinal)' },
@@ -373,7 +373,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'hand_color',
+                id: 'hand_color',
                 label: 'Hand Color',
                 options: [
                     { value: 'pink', label: 'Healthy pink' },
@@ -384,7 +384,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'radio',
-                name: 'hand_temperature',
+                id: 'hand_temperature',
                 label: 'Hand Temperature',
                 required: true,
                 options: [
@@ -404,7 +404,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'foot_temperature',
+                id: 'foot_temperature',
                 label: 'Foot Temperature',
                 required: true,
                 options: [
@@ -415,7 +415,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'checkbox',
-                name: 'features',
+                id: 'features',
                 label: 'Leg/Foot Features',
                 options: [
                     { value: 'swelling', label: 'Swelling/Edema' },
@@ -431,7 +431,7 @@ const OBSERVATION_SECTIONS = [
         fields: [
             {
                 type: 'radio',
-                name: 'texture',
+                id: 'texture',
                 label: 'Skin Texture',
                 options: [
                     { value: 'normal', label: 'Smooth, appropriate moisture' },
@@ -442,7 +442,7 @@ const OBSERVATION_SECTIONS = [
             },
             {
                 type: 'checkbox',
-                name: 'lesions',
+                id: 'lesions',
                 label: 'Visible Skin Lesions/Rashes',
                 options: [
                     { value: 'none', label: 'Clear skin' },
