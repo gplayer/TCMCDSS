@@ -557,8 +557,19 @@ class TCMApp {
     async viewCompleteAnalysis() {
         this.showLoading(true);
         try {
-            const analysis = await API.analyzePatterns(this.currentVisit.id);
+            // Fetch both pattern analysis and TCM profile
+            const [analysis, tcmResponse] = await Promise.all([
+                API.analyzePatterns(this.currentVisit.id),
+                API.getTCMProfile(this.currentVisit.id)
+            ]);
+            
+            // Display TCM Profile first
+            const tcmContainer = document.getElementById('results-tcm-profile');
+            this.displayTCMProfile(tcmResponse.tcm_profile, tcmContainer);
+            
+            // Then display pattern results
             this.displayFinalResults(analysis);
+            
             this.showScreen('results');
         } catch (error) {
             alert('Error loading analysis: ' + error.message);
@@ -570,12 +581,13 @@ class TCMApp {
     displayFinalResults(analysis) {
         const container = document.getElementById('final-results');
         
-        let html = '<h3>Pattern Analysis Results</h3>';
+        let html = '';
         
         // Module completion status
         html += '<div class="completion-status">';
         html += '<h4>Completed Modules:</h4>';
         html += '<ul>';
+        if (this.completedModules.has('chief-complaint')) html += '<li>✓ Chief Complaint Assessment</li>';
         if (this.completedModules.has('observation')) html += '<li>✓ Module 1: Observation</li>';
         if (this.completedModules.has('interrogation')) html += '<li>✓ Module 2: Interrogation</li>';
         html += '</ul></div>';
