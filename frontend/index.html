@@ -95,6 +95,13 @@
                     <p class="module-instruction">Choose which diagnostic method to begin with. You can complete modules in any order.</p>
                     
                     <div class="module-cards">
+                        <div class="module-card" onclick="app.startModule('chief-complaint')">
+                            <div class="module-icon">📋</div>
+                            <h3>Chief Complaint Assessment</h3>
+                            <p>Western diagnoses, primary concerns, and recent symptoms</p>
+                            <div class="module-status" id="status-chief-complaint">Not Started</div>
+                        </div>
+
                         <div class="module-card" onclick="app.startModule('observation')">
                             <div class="module-icon">👁️</div>
                             <h3>Module 1: Observation (望 Wàng)</h3>
@@ -128,6 +135,51 @@
                         <button id="btn-view-analysis" class="btn btn-primary" style="display: none;">View Complete Analysis</button>
                         <button id="btn-cancel-module" class="btn btn-secondary">Back to Home</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Chief Complaint Screen -->
+            <div id="screen-chief-complaint" class="screen">
+                <div class="form-card">
+                    <h2>Chief Complaint Assessment</h2>
+                    <p class="module-instruction">Comprehensive information about the patient's current condition and concerns.</p>
+                    
+                    <form id="form-chief-complaint">
+                        <!-- Part A: Western Medical Conditions -->
+                        <div class="form-section">
+                            <h3>Part A: Western Medical Diagnoses</h3>
+                            <p class="field-instruction">List any diagnosed health conditions from Western medicine (e.g., Type 2 Diabetes, Hypertension, IBS)</p>
+                            <div class="form-group">
+                                <label for="western-conditions">Diagnosed Conditions</label>
+                                <textarea id="western-conditions" rows="3" placeholder="e.g., Type 2 Diabetes, Irritable Bowel Syndrome, Hypertension"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Part B: Primary Concern -->
+                        <div class="form-section">
+                            <h3>Part B: Primary Concern / Main Complaint</h3>
+                            <p class="field-instruction">What is the main reason for this visit? What concerns the patient most?</p>
+                            <div class="form-group">
+                                <label for="primary-concern">Primary Concern *</label>
+                                <textarea id="primary-concern" rows="3" required placeholder="e.g., Chronic fatigue and digestive problems that have worsened over the past 6 months"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Part C: Recent Associated Symptoms -->
+                        <div class="form-section">
+                            <h3>Part C: Associated Symptoms (Past 2-3 Months)</h3>
+                            <p class="field-instruction">What other symptoms has the patient experienced recently? Include timing, frequency, and any patterns noticed.</p>
+                            <div class="form-group">
+                                <label for="recent-symptoms">Recent Symptoms</label>
+                                <textarea id="recent-symptoms" rows="4" placeholder="e.g., Cold hands and feet (especially at night), loose stools 2-3 times daily, occasional headaches in the afternoon"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="btn-cancel-chief-complaint" class="btn btn-secondary">Back</button>
+                            <button type="submit" class="btn btn-primary">Save & Continue</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 

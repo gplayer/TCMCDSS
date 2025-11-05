@@ -44,6 +44,10 @@ class TCMApp {
         document.getElementById('btn-next-section-int').addEventListener('click', () => this.navigateSection(1, 'interrogation'));
         document.getElementById('btn-complete-interrogation').addEventListener('click', () => this.completeModule('interrogation'));
 
+        // Chief Complaint form
+        document.getElementById('form-chief-complaint').addEventListener('submit', (e) => this.handleChiefComplaint(e));
+        document.getElementById('btn-cancel-chief-complaint').addEventListener('click', () => this.showScreen('module-select'));
+
         // Results screen
         document.getElementById('btn-back-to-modules').addEventListener('click', () => this.showScreen('module-select'));
         document.getElementById('btn-new-visit').addEventListener('click', () => this.showScreen('home'));
@@ -67,6 +71,13 @@ class TCMApp {
     }
 
     updateModuleStatus() {
+        // Update chief complaint status
+        const ccStatus = document.getElementById('status-chief-complaint');
+        if (this.completedModules.has('chief-complaint')) {
+            ccStatus.textContent = 'Completed';
+            ccStatus.classList.add('completed');
+        }
+
         // Update observation status
         const obsStatus = document.getElementById('status-observation');
         if (this.completedModules.has('observation')) {
@@ -179,11 +190,63 @@ class TCMApp {
         }
     }
 
+    async loadChiefComplaint() {
+        if (!this.currentVisit) return;
+        
+        this.showLoading(true);
+        try {
+            const response = await API.getChiefComplaint(this.currentVisit.id);
+            const data = response.chief_complaint;
+            
+            if (data) {
+                document.getElementById('western-conditions').value = data.western_conditions || '';
+                document.getElementById('primary-concern').value = data.primary_concern || '';
+                document.getElementById('recent-symptoms').value = data.recent_symptoms || '';
+            }
+        } catch (error) {
+            // If no data exists yet, that's fine - form starts empty
+            console.log('No existing chief complaint data');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async handleChiefComplaint(e) {
+        e.preventDefault();
+        
+        if (!this.currentVisit) {
+            alert('No active visit. Please create a patient first.');
+            return;
+        }
+
+        this.showLoading(true);
+        try {
+            const chiefComplaintData = {
+                western_conditions: document.getElementById('western-conditions').value.trim(),
+                primary_concern: document.getElementById('primary-concern').value.trim(),
+                recent_symptoms: document.getElementById('recent-symptoms').value.trim()
+            };
+
+            await API.saveChiefComplaint(this.currentVisit.id, chiefComplaintData);
+            this.completedModules.add('chief-complaint');
+            
+            alert('Chief Complaint saved successfully!');
+            this.showScreen('module-select');
+        } catch (error) {
+            alert('Error saving chief complaint: ' + error.message);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
     startModule(moduleName) {
         this.currentModule = moduleName;
         this.currentSection = 0;
         
-        if (moduleName === 'observation') {
+        if (moduleName === 'chief-complaint') {
+            this.showScreen('chief-complaint');
+            this.loadChiefComplaint();
+        } else if (moduleName === 'observation') {
             this.showScreen('observation');
             this.renderSectionButtons('observation');
             this.renderSection(0, 'observation');

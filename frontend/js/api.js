@@ -88,4 +88,13 @@ class API {
     static async getPatternDetails(patternId) {
         return this.request(`/patterns/${patternId}`);
     }
+
+    // Chief Complaint APIs
+    static async saveChiefComplaint(visitId, chiefComplaintData) {
+        return this.request(`/chief-complaint/visit/${visitId}`, 'POST', chiefComplaintData);
+    }
+
+    static async getChiefComplaint(visitId) {
+        return this.request(`/chief-complaint/visit/${visitId}`);
+    }
 }
