@@ -33,7 +33,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Tonify Spleen-Qi",
         "common_points": ["ST-36", "SP-6", "CV-12", "BL-20"]
     },
-    
+
     "kidney_yang_deficiency": {
         "name": "Kidney-Yang Deficiency",
         "category": "Deficiency/Kidney",
@@ -61,7 +61,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Warm and Tonify Kidney-Yang",
         "common_points": ["GV-4", "CV-4", "BL-23", "KI-3", "KI-7"]
     },
-    
+
     "liver_qi_stagnation": {
         "name": "Liver-Qi Stagnation",
         "category": "Excess/Liver",
@@ -86,7 +86,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Soothe Liver-Qi, Regulate Qi flow",
         "common_points": ["LR-3", "LR-14", "GB-34", "PC-6"]
     },
-    
+
     "blood_deficiency": {
         "name": "Blood Deficiency",
         "category": "Deficiency/Blood",
@@ -112,7 +112,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Nourish Blood",
         "common_points": ["SP-6", "ST-36", "BL-17", "BL-20"]
     },
-    
+
     "yin_deficiency_empty_heat": {
         "name": "Yin Deficiency with Empty Heat",
         "category": "Deficiency/Yin",
@@ -139,7 +139,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Nourish Yin, Clear Empty Heat",
         "common_points": ["KI-3", "KI-6", "SP-6", "LU-7", "HT-6"]
     },
-    
+
     "dampness": {
         "name": "Dampness",
         "category": "Excess/Dampness",
@@ -166,7 +166,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Resolve Dampness, Strengthen Spleen",
         "common_points": ["SP-6", "SP-9", "ST-40", "CV-12"]
     },
-    
+
     "damp_heat": {
         "name": "Damp-Heat",
         "category": "Excess/Damp-Heat",
@@ -193,7 +193,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Clear Heat, Resolve Dampness",
         "common_points": ["SP-6", "SP-9", "LI-11", "ST-44"]
     },
-    
+
     "liver_fire": {
         "name": "Liver-Fire",
         "category": "Excess/Liver",
@@ -219,7 +219,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Clear Liver-Fire, Drain Fire",
         "common_points": ["LR-2", "LR-3", "GB-20", "LI-11"]
     },
-    
+
     "heart_blood_deficiency": {
         "name": "Heart-Blood Deficiency",
         "category": "Deficiency/Heart",
@@ -244,7 +244,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Nourish Heart-Blood, Calm Mind",
         "common_points": ["HT-7", "SP-6", "ST-36", "BL-15", "BL-17"]
     },
-    
+
     "lung_qi_deficiency": {
         "name": "Lung-Qi Deficiency",
         "category": "Deficiency/Lung",
@@ -269,7 +269,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Tonify Lung-Qi",
         "common_points": ["LU-9", "LU-7", "BL-13", "ST-36", "CV-17"]
     },
-    
+
     "kidney_yin_deficiency": {
         "name": "Kidney-Yin Deficiency",
         "category": "Deficiency/Kidney",
@@ -296,7 +296,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Nourish Kidney-Yin",
         "common_points": ["KI-3", "KI-6", "KI-10", "SP-6", "BL-23"]
     },
-    
+
     "phlegm": {
         "name": "Phlegm",
         "category": "Excess/Phlegm",
@@ -322,7 +322,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Transform Phlegm, Resolve Dampness",
         "common_points": ["ST-40", "SP-6", "SP-9", "CV-12"]
     },
-    
+
     "blood_stasis": {
         "name": "Blood Stasis",
         "category": "Excess/Blood",
@@ -348,7 +348,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Invigorate Blood, Remove Stasis",
         "common_points": ["SP-10", "SP-6", "LR-3", "BL-17"]
     },
-    
+
     "liver_yang_rising": {
         "name": "Liver-Yang Rising",
         "category": "Excess/Liver",
@@ -373,7 +373,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Subdue Liver-Yang, Nourish Liver-Yin",
         "common_points": ["LR-3", "LR-2", "GB-20", "KI-3"]
     },
-    
+
     "stomach_heat": {
         "name": "Stomach-Heat",
         "category": "Excess/Stomach",
@@ -398,7 +398,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Clear Stomach-Heat",
         "common_points": ["ST-44", "ST-45", "LI-11", "CV-12"]
     },
-    
+
     "heart_fire": {
         "name": "Heart-Fire",
         "category": "Excess/Heart",
@@ -423,7 +423,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Clear Heart-Fire",
         "common_points": ["HT-8", "HT-7", "PC-7", "SI-2"]
     },
-    
+
     "spleen_yang_deficiency": {
         "name": "Spleen-Yang Deficiency",
         "category": "Deficiency/Spleen",
@@ -449,7 +449,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Warm and Tonify Spleen-Yang",
         "common_points": ["ST-36", "SP-6", "CV-12", "BL-20", "CV-4"]
     },
-    
+
     "lung_yin_deficiency": {
         "name": "Lung-Yin Deficiency",
         "category": "Deficiency/Lung",
@@ -474,7 +474,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Nourish Lung-Yin",
         "common_points": ["LU-9", "LU-7", "KI-6", "SP-6", "BL-13"]
     },
-    
+
     "qi_deficiency": {
         "name": "Qi Deficiency",
         "category": "Deficiency/Qi",
@@ -499,7 +499,7 @@ PATTERN_KNOWLEDGE_BASE = {
         "treatment_principle": "Tonify Qi",
         "common_points": ["ST-36", "SP-6", "LU-9", "CV-6"]
     },
-    
+
     "liver_blood_deficiency": {
         "name": "Liver-Blood Deficiency",
         "category": "Deficiency/Liver",
@@ -530,28 +530,28 @@ PATTERN_KNOWLEDGE_BASE = {
 
 class PatternMatcher:
     """Pattern matching engine using weighted scoring algorithm"""
-    
+
     def __init__(self):
         self.patterns = PATTERN_KNOWLEDGE_BASE
         self.observation_data = {}
-    
+
     def analyze(self, observations: Dict) -> List[Dict]:
         """
         Analyze observations and return ranked pattern matches
-        
+
         Args:
             observations: Dictionary containing all observation data
-            
+
         Returns:
             List of pattern matches with scores and evidence
         """
         self.observation_data = self._normalize_observations(observations)
-        
+
         pattern_scores = []
-        
+
         for pattern_id, pattern in self.patterns.items():
             score, evidence = self._calculate_pattern_score(pattern_id, pattern)
-            
+
             if score > 0:  # Only include patterns with some match
                 pattern_scores.append({
                     'pattern_id': pattern_id,
@@ -564,16 +564,16 @@ class PatternMatcher:
                     'treatment_principle': pattern['treatment_principle'],
                     'common_points': pattern['common_points']
                 })
-        
+
         # Sort by confidence score
         pattern_scores.sort(key=lambda x: x['confidence'], reverse=True)
-        
+
         return pattern_scores
-    
+
     def _normalize_observations(self, observations: Dict) -> Dict:
         """Convert observation data into normalized format for matching"""
         normalized = {}
-        
+
         # Extract key findings from each section
         if 'shen' in observations:
             shen = observations['shen'].get('data', {})
@@ -581,56 +581,73 @@ class PatternMatcher:
                 normalized['shen_weak'] = True
             if shen.get('overall') == 'strong':
                 normalized['shen_strong'] = True
-        
+
         if 'tongue' in observations:
             tongue = observations['tongue'].get('data', {})
-            
+
             # Tongue body color
             color = tongue.get('body_color')
             if color:
                 normalized[f'tongue_{color}'] = True
-                
+
             # Tongue shape
             shape = tongue.get('body_shape')
             if shape:
                 normalized[f'tongue_{shape}'] = True
-            
-            # Tongue features
-            if tongue.get('tooth_marked'):
-                normalized['tongue_tooth_marked'] = True
-            if tongue.get('cracks'):
-                normalized['tongue_cracks'] = True
-            if tongue.get('red_points'):
-                normalized['tongue_red_points'] = True
-            if tongue.get('purple_spots'):
-                normalized['tongue_purple_spots'] = True
-                
+
+            # Tongue features (handle array from multiselect field)
+            features = tongue.get('features', [])
+            if isinstance(features, list):
+                # Frontend saves features as array: ["tooth_marked", "cracks", ...]
+                if 'tooth_marked' in features:
+                    normalized['tongue_tooth_marked'] = True
+                if 'cracks' in features:
+                    normalized['tongue_cracks'] = True
+                if 'red_points' in features:
+                    normalized['tongue_red_points'] = True
+                if 'purple_spots' in features:
+                    normalized['tongue_purple_spots'] = True
+                if 'red_sides' in features:
+                    normalized['tongue_red_sides'] = True
+                if 'red_tip' in features:
+                    normalized['tongue_red_tip'] = True
+                if 'red_center' in features:
+                    normalized['tongue_red_center'] = True
+            # Fallback for backward compatibility (old individual keys)
+            else:
+                if tongue.get('tooth_marked'):
+                    normalized['tongue_tooth_marked'] = True
+                if tongue.get('cracks'):
+                    normalized['tongue_cracks'] = True
+                if tongue.get('red_points'):
+                    normalized['tongue_red_points'] = True
+                if tongue.get('purple_spots'):
+                    normalized['tongue_purple_spots'] = True
+                if tongue.get('red_sides'):
+                    normalized['tongue_red_sides'] = True
+                if tongue.get('red_tip'):
+                    normalized['tongue_red_tip'] = True
+                if tongue.get('red_center'):
+                    normalized['tongue_red_center'] = True
+
             # Tongue moisture
             moisture = tongue.get('moisture')
             if moisture:
                 normalized[f'tongue_{moisture}'] = True
-            
+
             # Tongue coating
             coating_color = tongue.get('coating_color')
             if coating_color:
                 normalized[f'coating_{coating_color}'] = True
-            
+
             coating_thick = tongue.get('coating_thickness')
             if coating_thick:
                 normalized[f'coating_{coating_thick}'] = True
-            
+
             coating_quality = tongue.get('coating_quality')
             if coating_quality:
                 normalized[f'coating_{coating_quality}'] = True
-                
-            # Special tongue colors/locations
-            if tongue.get('red_sides'):
-                normalized['tongue_red_sides'] = True
-            if tongue.get('red_tip'):
-                normalized['tongue_red_tip'] = True
-            if tongue.get('red_center'):
-                normalized['tongue_red_center'] = True
-        
+
         if 'complexion' in observations:
             complexion = observations['complexion'].get('data', {})
             color = complexion.get('primary_color')
@@ -639,7 +656,7 @@ class PatternMatcher:
                 normalized[f'complexion_{color}_{shade}'] = True
             elif color:
                 normalized[f'complexion_{color}'] = True
-        
+
         if 'hands' in observations:
             hands = observations['hands'].get('data', {})
             temp = hands.get('temperature')
@@ -647,7 +664,7 @@ class PatternMatcher:
                 normalized['hands_cold'] = True
             elif temp == 'hot_palms':
                 normalized['hands_hot_palms'] = True
-        
+
         if 'feet' in observations:
             feet = observations['feet'].get('data', {})
             temp = feet.get('temperature')
@@ -655,12 +672,12 @@ class PatternMatcher:
                 normalized['feet_cold'] = True
             elif temp == 'hot':
                 normalized['feet_hot'] = True
-        
+
         if 'eyes' in observations:
             eyes = observations['eyes'].get('data', {})
             if eyes.get('sclera_red'):
                 normalized['eyes_red'] = True
-        
+
         if 'nails' in observations:
             nails = observations['nails'].get('data', {})
             color = nails.get('color')
@@ -668,91 +685,148 @@ class PatternMatcher:
                 normalized[f'nails_{color}'] = True
             if nails.get('brittle'):
                 normalized['nails_brittle'] = True
-        
+
         if 'lips' in observations:
             lips = observations['lips'].get('data', {})
             color = lips.get('color')
             if color:
                 normalized[f'lips_{color}'] = True
-        
+
         if 'movement' in observations:
             movement = observations['movement'].get('data', {})
             if movement.get('restless'):
                 normalized['movement_restless'] = True
-        
+
         if 'posture' in observations:
             posture = observations['posture'].get('data', {})
             if posture.get('stooped'):
                 normalized['posture_stooped'] = True
-        
+
         if 'voice' in observations:
             voice = observations['voice'].get('data', {})
             if voice.get('weak'):
                 normalized['voice_weak'] = True
-        
+
         if 'chest' in observations:
             chest = observations['chest'].get('data', {})
             if chest.get('sunken'):
                 normalized['chest_sunken'] = True
-        
+
         if 'body_type' in observations:
             body = observations['body_type'].get('data', {})
             if body.get('overweight'):
                 normalized['body_overweight'] = True
-        
+
         if 'skin' in observations:
             skin = observations['skin'].get('data', {})
             if skin.get('puffy'):
                 normalized['skin_puffy'] = True
             if skin.get('greasy'):
                 normalized['skin_greasy'] = True
-        
+
         if 'veins' in observations:
             veins = observations['veins'].get('data', {})
             if veins.get('distended'):
                 normalized['veins_distended'] = True
-        
+
+
+        # INTERROGATION DATA NORMALIZATION
+        if 'chills-fever' in observations:
+            chills_fever = observations['chills-fever'].get('data', {})
+            fever = chills_fever.get('fever_present', '')
+            if fever in ['High', 'Moderate']:
+                normalized['fever_present'] = True
+            chills = chills_fever.get('chills_present', '')
+            if chills == 'Aversion to cold':
+                normalized['aversion_to_cold'] = True
+                normalized['hands_cold'] = True
+                normalized['feet_cold'] = True
+        if 'perspiration' in observations:
+            perspiration = observations['perspiration'].get('data', {})
+            sweating_pattern = perspiration.get('sweating_pattern', '')
+            if sweating_pattern == 'Night sweats':
+                normalized['night_sweats'] = True
+            if sweating_pattern == 'Spontaneous sweating':
+                normalized['spontaneous_sweating'] = True
+        if 'head-body' in observations:
+            head_body = observations['head-body'].get('data', {})
+            body_aches = head_body.get('body_aches', [])
+            if isinstance(body_aches, list):
+                if 'Back' in body_aches:
+                    normalized['back_pain'] = True
+            dizziness = head_body.get('dizziness', '')
+            if dizziness in ['Frequent dizziness', 'Vertigo (spinning)']:
+                normalized['dizziness_present'] = True
+        if 'stools-urine' in observations:
+            stools_urine = observations['stools-urine'].get('data', {})
+            stool_consistency = stools_urine.get('stool_consistency', '')
+            if stool_consistency == 'Loose/watery':
+                normalized['loose_stools'] = True
+            urination_freq = stools_urine.get('urination_frequency', '')
+            if 'Night urination' in urination_freq:
+                normalized['night_urination'] = True
+        if 'thirst-appetite' in observations:
+            thirst_appetite = observations['thirst-appetite'].get('data', {})
+            thirst = thirst_appetite.get('thirst', '')
+            if thirst == 'No thirst':
+                normalized['no_thirst'] = True
+            appetite = thirst_appetite.get('appetite', '')
+            if appetite in ['No appetite', 'Poor appetite']:
+                normalized['poor_appetite'] = True
+        if 'chest-abdomen' in observations:
+            chest_abdomen = observations['chest-abdomen'].get('data', {})
+            abd_sensations = chest_abdomen.get('abdominal_sensations', [])
+            if isinstance(abd_sensations, list):
+                if 'Cold sensation' in abd_sensations:
+                    normalized['abdomen_cold'] = True
+        if 'energy-vitality' in observations:
+            energy = observations['energy-vitality'].get('data', {})
+            energy_level = energy.get('energy_level', '')
+            if energy_level in ['Low', 'Very low', 'Exhausted']:
+                normalized['low_energy'] = True
+                normalized['voice_weak'] = True
+
         return normalized
-    
+
     def _calculate_pattern_score(self, pattern_id: str, pattern: Dict) -> Tuple[float, Dict]:
         """Calculate weighted score for a pattern"""
         key_obs = pattern.get('key_observations', {})
-        
+
         total_possible_score = sum(key_obs.values())
         actual_score = 0
-        
+
         supporting = []
         contradicting = []
-        
+
         for obs_key, weight in key_obs.items():
             if obs_key in self.observation_data:
                 actual_score += weight
                 supporting.append(self._format_evidence(obs_key))
-        
+
         # Check for contradicting evidence
         # (simplified - can be expanded with explicit contradictions)
-        
+
         confidence = actual_score / total_possible_score if total_possible_score > 0 else 0
-        
+
         evidence = {
             'supporting': supporting,
             'contradicting': contradicting
         }
-        
+
         return confidence, evidence
-    
+
     def _format_evidence(self, obs_key: str) -> str:
         """Format observation key into human-readable evidence"""
         # Convert snake_case to Title Case with proper spacing
         words = obs_key.replace('_', ' ').title()
         return words
-    
+
     def get_pattern_details(self, pattern_id: str) -> Dict:
         """Get detailed information about a specific pattern"""
         if pattern_id in self.patterns:
             return self.patterns[pattern_id]
         return None
-    
+
     def get_all_patterns(self) -> List[Dict]:
         """Get list of all available patterns"""
         return [
