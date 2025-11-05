@@ -80,6 +80,20 @@ def init_db(db_path):
         )
     ''')
 
+    # Chief Complaints table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chief_complaints (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            visit_id INTEGER UNIQUE NOT NULL,
+            western_conditions TEXT,
+            primary_concern TEXT,
+            recent_symptoms TEXT,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (visit_id) REFERENCES visits (id)
+        )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -275,5 +289,52 @@ class PatternAnalysis:
                 'patterns': json.loads(analysis['patterns']),
                 'confidence': analysis['confidence'],
                 'created_at': analysis['created_at']
+            }
+        return None
+
+class ChiefComplaint:
+    @staticmethod
+    def save(db_path, visit_id, western_conditions=None, primary_concern=None, recent_symptoms=None):
+        conn = get_db_connection(db_path)
+        cursor = conn.cursor()
+        now = datetime.now().isoformat()
+
+        # Check if chief complaint already exists for this visit
+        existing = cursor.execute(
+            'SELECT id FROM chief_complaints WHERE visit_id = ?',
+            (visit_id,)
+        ).fetchone()
+
+        if existing:
+            cursor.execute('''
+                UPDATE chief_complaints
+                SET western_conditions = ?, primary_concern = ?, recent_symptoms = ?, updated_at = ?
+                WHERE id = ?
+            ''', (western_conditions, primary_concern, recent_symptoms, now, existing[0]))
+        else:
+            cursor.execute('''
+                INSERT INTO chief_complaints (visit_id, western_conditions, primary_concern, recent_symptoms, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (visit_id, western_conditions, primary_concern, recent_symptoms, now, now))
+
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_by_visit(db_path, visit_id):
+        conn = get_db_connection(db_path)
+        chief_complaint = conn.execute(
+            'SELECT * FROM chief_complaints WHERE visit_id = ?',
+            (visit_id,)
+        ).fetchone()
+        conn.close()
+
+        if chief_complaint:
+            return {
+                'western_conditions': chief_complaint['western_conditions'],
+                'primary_concern': chief_complaint['primary_concern'],
+                'recent_symptoms': chief_complaint['recent_symptoms'],
+                'created_at': chief_complaint['created_at'],
+                'updated_at': chief_complaint['updated_at']
             }
         return None
