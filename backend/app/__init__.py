@@ -16,11 +16,14 @@ def create_app():
     database.init_db(app.config['DATABASE'])
     
     # Register blueprints
-    from .routes import patients, observations, interrogations, patterns
+    from .routes import patients, observations, interrogations, patterns, reasoning
+    from .routes.chief_complaints import chief_complaints_bp
     app.register_blueprint(patients.bp)
     app.register_blueprint(observations.bp)
     app.register_blueprint(interrogations.interrogations_bp)
     app.register_blueprint(patterns.bp)
+    app.register_blueprint(chief_complaints_bp)
+    app.register_blueprint(reasoning.reasoning_bp)
     
     @app.route('/health')
     def health():
