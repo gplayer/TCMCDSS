@@ -97,4 +97,13 @@ class API {
     static async getChiefComplaint(visitId) {
         return this.request(`/chief-complaint/visit/${visitId}`);
     }
+
+    // TCM Reasoning APIs
+    static async getTCMProfile(visitId) {
+        return this.request(`/reasoning/analyze/${visitId}`, 'POST');
+    }
+
+    static async getReasoningProfile(visitId) {
+        return this.request(`/reasoning/visit/${visitId}`);
+    }
 }

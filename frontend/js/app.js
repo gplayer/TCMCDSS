@@ -48,6 +48,10 @@ class TCMApp {
         document.getElementById('form-chief-complaint').addEventListener('submit', (e) => this.handleChiefComplaint(e));
         document.getElementById('btn-cancel-chief-complaint').addEventListener('click', () => this.showScreen('module-select'));
 
+        // TCM Profile refresh buttons
+        document.getElementById('btn-refresh-profile-obs').addEventListener('click', () => this.refreshTCMProfile('observation'));
+        document.getElementById('btn-refresh-profile-int').addEventListener('click', () => this.refreshTCMProfile('interrogation'));
+
         // Results screen
         document.getElementById('btn-back-to-modules').addEventListener('click', () => this.showScreen('module-select'));
         document.getElementById('btn-new-visit').addEventListener('click', () => this.showScreen('home'));
@@ -605,6 +609,147 @@ class TCMApp {
         }
 
         container.innerHTML = html;
+    }
+
+    async refreshTCMProfile(module) {
+        /**
+         * Fetch and display TCM Profile for current visit
+         */
+        if (!this.currentVisit) return;
+
+        const suffix = module === 'observation' ? 'obs' : 'int';
+        const container = document.getElementById(`tcm-profile-${suffix}`);
+        
+        this.showLoading(true);
+        try {
+            const response = await API.getTCMProfile(this.currentVisit.id);
+            const profile = response.tcm_profile;
+            
+            this.displayTCMProfile(profile, container);
+        } catch (error) {
+            console.error('Error fetching TCM profile:', error);
+            container.innerHTML = '<p class="tcm-profile-empty">Error loading TCM profile. Please try again.</p>';
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    displayTCMProfile(profile, container) {
+        /**
+         * Render TCM Profile in the specified container
+         */
+        if (!profile || profile.data_completeness === 0) {
+            container.innerHTML = '<p class="tcm-profile-empty">Complete data collection to generate TCM profile</p>';
+            return;
+        }
+
+        let html = '';
+
+        // Data Completeness
+        html += `
+            <div class="tcm-section">
+                <div class="tcm-section-title">Data Completeness</div>
+                <div class="tcm-completeness">
+                    <div class="tcm-completeness-bar">
+                        <div class="tcm-completeness-fill" style="width: ${profile.data_completeness}%"></div>
+                    </div>
+                    <div class="tcm-completeness-text">${profile.data_completeness}%</div>
+                </div>
+            </div>
+        `;
+
+        // Eight Principles
+        if (profile.eight_principles) {
+            const ep = profile.eight_principles;
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Eight Principles (八纲辨证)</div>
+                    <div class="tcm-badges">
+                        ${this.getTCMBadge(ep.interior_exterior, 'neutral', 'Interior/Exterior')}
+                        ${this.getTCMBadge(ep.hot_cold, ep.hot_cold === 'hot' ? 'hot' : ep.hot_cold === 'cold' ? 'cold' : 'neutral', 'Hot/Cold')}
+                        ${this.getTCMBadge(ep.excess_deficiency, ep.excess_deficiency === 'excess' ? 'excess' : ep.excess_deficiency === 'deficiency' ? 'deficiency' : 'neutral', 'Excess/Deficiency')}
+                        ${this.getTCMBadge(ep.yin_yang, ep.yin_yang === 'yin' ? 'yin' : ep.yin_yang === 'yang' ? 'yang' : 'neutral', 'Yin/Yang')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Affected Organs
+        if (profile.affected_organs && profile.affected_organs.length > 0) {
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Affected Organs (脏腑辨证)</div>
+                    <div class="tcm-badges">
+                        ${profile.affected_organs.map(organ => 
+                            `<span class="tcm-badge tcm-badge-organ">${organ}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Pathogenic Factors
+        if (profile.pathogenic_factors && profile.pathogenic_factors.length > 0) {
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Pathogenic Factors (病因)</div>
+                    <div class="tcm-badges">
+                        ${profile.pathogenic_factors.map(factor => 
+                            `<span class="tcm-badge tcm-badge-pathogen">${factor}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Qi/Blood/Fluids
+        if (profile.qi_blood_fluids) {
+            const qbf = profile.qi_blood_fluids;
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Qi / Blood / Fluids</div>
+                    <div class="tcm-badges">
+                        <span class="tcm-badge tcm-badge-neutral">Qi: ${qbf.qi}</span>
+                        <span class="tcm-badge tcm-badge-neutral">Blood: ${qbf.blood}</span>
+                        <span class="tcm-badge tcm-badge-neutral">Fluids: ${qbf.fluids}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Key Manifestations
+        if (profile.key_manifestations && profile.key_manifestations.length > 0) {
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Key Manifestations</div>
+                    <ul class="tcm-manifestations">
+                        ${profile.key_manifestations.map(m => `<li>${m}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Reasoning Notes (collapsible)
+        if (profile.reasoning_notes && profile.reasoning_notes.length > 0) {
+            html += `
+                <div class="tcm-section">
+                    <div class="tcm-section-title">Reasoning Process</div>
+                    <div class="tcm-reasoning-notes">
+                        ${profile.reasoning_notes.map(note => `<p>• ${note}</p>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+    }
+
+    getTCMBadge(value, type, label) {
+        /**
+         * Generate HTML for a TCM badge
+         */
+        const displayValue = value.charAt(0).toUpperCase() + value.slice(1);
+        return `<span class="tcm-badge tcm-badge-${type}" title="${label}">${displayValue}</span>`;
     }
 }
 
