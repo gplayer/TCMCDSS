@@ -625,6 +625,38 @@ class TCMReasoningEngine:
                 organs.add("Spleen")
                 organs.add("Kidney")
         
+        # Heat patterns - identify organs by thermal manifestations
+        if self.profile.hot_cold == "hot":
+            # Heart fire - restlessness, red face, red tongue tip
+            if tongue.get('features') and 'red_tip' in tongue.get('features', []):
+                organs.add("Heart")
+            
+            # Liver fire/heat - red complexion, irritability, red sides
+            complexion = obs.get('complexion', {}).get('data', {})
+            if complexion.get('primary_color') == 'red':
+                organs.add("Liver")  # Liver heat often causes red face
+            
+            # Stomach heat - red tongue center, coating
+            if tongue.get('features') and 'red_center' in tongue.get('features', []):
+                organs.add("Stomach")
+            
+            # Lung heat - red tongue front
+            if tongue.get('features') and 'red_front' in tongue.get('features', []):
+                organs.add("Lung")
+        
+        # If no specific organs identified but have clear pattern, infer primary organ
+        if not organs and self.profile.data_completeness > 0.5:
+            # Default organ involvement based on primary pattern characteristics
+            if self.profile.hot_cold == "hot":
+                # Heat patterns often involve Liver, Heart, or Stomach
+                if self.profile.excess_deficiency == "excess":
+                    organs.add("Liver")  # Liver patterns common in heat/excess
+            elif self.profile.hot_cold == "cold":
+                # Cold patterns often involve Spleen, Kidney, or Yang organs
+                if self.profile.excess_deficiency == "deficiency":
+                    organs.add("Spleen")
+                    organs.add("Kidney")
+        
         self.profile.affected_organs = sorted(list(organs))
         if organs:
             self.profile.reasoning_notes.append(f"Affected organs: {', '.join(sorted(organs))}")
