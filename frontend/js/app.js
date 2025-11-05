@@ -199,10 +199,6 @@ class TCMApp {
                 minute: '2-digit'
             });
             
-            const chiefComplaintPreview = visit.chief_complaint 
-                ? visit.chief_complaint.substring(0, 60) + (visit.chief_complaint.length > 60 ? '...' : '')
-                : 'No chief complaint';
-            
             const statusBadge = visit.status === 'completed' 
                 ? '<span style="color: #4caf50;">●</span> Completed'
                 : '<span style="color: #ff9800;">●</span> In Progress';
@@ -215,9 +211,6 @@ class TCMApp {
                     </div>
                     <div class="patient-info" style="font-size: 0.85rem; margin-top: 0.3rem;">
                         📅 ${dateStr}
-                    </div>
-                    <div class="patient-info" style="font-size: 0.8rem; color: #666; margin-top: 0.3rem; font-style: italic;">
-                        ${chiefComplaintPreview}
                     </div>
                     <div class="patient-info" style="margin-top: 0.5rem; font-weight: 600;">
                         ${statusBadge}
@@ -246,8 +239,47 @@ class TCMApp {
         try {
             this.currentVisit = { id: visitId };
             
-            // TODO: Load existing module completion status
-            // For now, just go to module selection
+            // Load existing data to determine module completion status
+            const [chiefComplaint, observations, interrogations] = await Promise.all([
+                API.getChiefComplaint(visitId).catch(() => null),
+                API.getObservations(visitId).catch(() => ({ observations: {} })),
+                API.getInterrogations(visitId).catch(() => ({ interrogations: {} }))
+            ]);
+            
+            // Check chief complaint completion
+            if (chiefComplaint && chiefComplaint.chief_complaint && 
+                chiefComplaint.chief_complaint.primary_concern) {
+                this.completedModules.add('chief-complaint');
+            }
+            
+            // Check observation completion
+            const obsData = observations.observations || {};
+            const obsCount = Object.keys(obsData).length;
+            if (obsCount >= 12) { // All 12 sections completed
+                this.completedModules.add('observation');
+            } else if (obsCount > 0) {
+                // Mark sections as completed
+                Object.keys(obsData).forEach((section, index) => {
+                    if (obsData[section].completed) {
+                        this.completedSectionsObs.add(index);
+                    }
+                });
+            }
+            
+            // Check interrogation completion
+            const intData = interrogations.interrogations || {};
+            const intCount = Object.keys(intData).length;
+            if (intCount >= 12) { // All 12 sections completed
+                this.completedModules.add('interrogation');
+            } else if (intCount > 0) {
+                // Mark sections as completed
+                Object.keys(intData).forEach((section, index) => {
+                    if (intData[section].completed) {
+                        this.completedSectionsInt.add(index);
+                    }
+                });
+            }
+            
             this.showScreen('module-select');
         } catch (error) {
             alert('Error loading visit: ' + error.message);
