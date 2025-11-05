@@ -252,32 +252,44 @@ class TCMApp {
                 this.completedModules.add('chief-complaint');
             }
             
-            // Check observation completion
+            // Load observation data into memory
             const obsData = observations.observations || {};
             const obsCount = Object.keys(obsData).length;
+            
+            // Store observation data for each section
+            Object.keys(obsData).forEach((sectionKey) => {
+                this.observationData[sectionKey] = obsData[sectionKey].data;
+                if (obsData[sectionKey].completed) {
+                    // Find section index by key
+                    const sectionIndex = OBSERVATION_SECTIONS.findIndex(s => s.id === sectionKey);
+                    if (sectionIndex >= 0) {
+                        this.completedSectionsObs.add(sectionIndex);
+                    }
+                }
+            });
+            
             if (obsCount >= 12) { // All 12 sections completed
                 this.completedModules.add('observation');
-            } else if (obsCount > 0) {
-                // Mark sections as completed
-                Object.keys(obsData).forEach((section, index) => {
-                    if (obsData[section].completed) {
-                        this.completedSectionsObs.add(index);
-                    }
-                });
             }
             
-            // Check interrogation completion
+            // Load interrogation data into memory
             const intData = interrogations.interrogations || {};
             const intCount = Object.keys(intData).length;
+            
+            // Store interrogation data for each section
+            Object.keys(intData).forEach((sectionKey) => {
+                this.interrogationData[sectionKey] = intData[sectionKey].data;
+                if (intData[sectionKey].completed) {
+                    // Find section index by key
+                    const sectionIndex = INTERROGATION_SECTIONS.findIndex(s => s.id === sectionKey);
+                    if (sectionIndex >= 0) {
+                        this.completedSectionsInt.add(sectionIndex);
+                    }
+                }
+            });
+            
             if (intCount >= 12) { // All 12 sections completed
                 this.completedModules.add('interrogation');
-            } else if (intCount > 0) {
-                // Mark sections as completed
-                Object.keys(intData).forEach((section, index) => {
-                    if (intData[section].completed) {
-                        this.completedSectionsInt.add(index);
-                    }
-                });
             }
             
             this.showScreen('module-select');
