@@ -149,17 +149,79 @@ class TCMApp {
             const response = await API.getPatient(patientId);
             this.currentPatient = response.patient;
             
-            // Create new visit
-            const chiefComplaint = prompt('Chief Complaint:');
-            if (chiefComplaint === null) return;
-            
-            const visitResponse = await API.createVisit(patientId, chiefComplaint);
-            this.currentVisit = { id: visitResponse.visit_id, chief_complaint: chiefComplaint };
+            // Get patient's visits
+            const visitsResponse = await API.getPatientVisits(patientId);
+            const visits = visitsResponse.visits || [];
             
             document.getElementById('current-patient-name').textContent = this.currentPatient.name;
-            this.showScreen('module-select');
+            
+            if (visits.length > 0) {
+                // Show visit selection dialog
+                this.displayVisitSelection(visits);
+            } else {
+                // No existing visits, create new one
+                await this.createNewVisit(patientId);
+            }
         } catch (error) {
             alert('Error: ' + error.message);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async createNewVisit(patientId) {
+        try {
+            const visitResponse = await API.createVisit(patientId, null);
+            this.currentVisit = { id: visitResponse.visit_id };
+            this.showScreen('module-select');
+        } catch (error) {
+            alert('Error creating visit: ' + error.message);
+        }
+    }
+
+    displayVisitSelection(visits) {
+        const container = document.getElementById('patients-container');
+        const list = document.getElementById('patients-list');
+        
+        let html = '<h3>Select Visit</h3>';
+        html += '<div class="visit-cards">';
+        
+        // Show existing visits
+        visits.forEach(visit => {
+            const date = new Date(visit.visit_date).toLocaleDateString();
+            html += `
+                <div class="patient-card visit-card" onclick="app.selectVisit(${visit.id})">
+                    <div class="patient-name">Visit: ${date}</div>
+                    <div class="patient-info">Status: ${visit.status}</div>
+                </div>
+            `;
+        });
+        
+        // Add "New Visit" button
+        html += `
+            <div class="patient-card visit-card new-visit-card" onclick="app.createNewVisit(${this.currentPatient.id})">
+                <div class="patient-name">+ Create New Visit</div>
+                <div class="patient-info">Start fresh diagnostic session</div>
+            </div>
+        `;
+        
+        html += '</div>';
+        html += '<button class="btn btn-secondary" onclick="app.loadPatients()" style="margin-top: 1rem;">← Back to Patients</button>';
+        
+        container.innerHTML = html;
+        list.style.display = 'block';
+    }
+
+    async selectVisit(visitId) {
+        this.showLoading(true);
+        try {
+            this.currentVisit = { id: visitId };
+            
+            // TODO: Load existing module completion status
+            // For now, just go to module selection
+            this.showScreen('module-select');
+        } catch (error) {
+            alert('Error loading visit: ' + error.message);
         } finally {
             this.showLoading(false);
         }

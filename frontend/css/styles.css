@@ -847,3 +847,31 @@ body {
     border-radius: 6px;
     border: 1px solid var(--border-color);
 }
+
+/* Visit Selection */
+.visit-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.visit-card {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.visit-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.new-visit-card {
+    border: 2px dashed var(--primary-color);
+    background: #f0f8f0;
+}
+
+.new-visit-card:hover {
+    background: #e8f5e8;
+    border-color: var(--secondary-color);
+}

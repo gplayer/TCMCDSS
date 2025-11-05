@@ -49,6 +49,19 @@ def get_patient(patient_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@bp.route('/<int:patient_id>/visits', methods=['GET'])
+def get_patient_visits(patient_id):
+    """Get all visits for a patient"""
+    try:
+        patient = Patient.get_by_id(current_app.config['DATABASE'], patient_id)
+        if not patient:
+            return jsonify({'error': 'Patient not found'}), 404
+        
+        visits = Visit.get_by_patient(current_app.config['DATABASE'], patient_id)
+        return jsonify({'visits': visits})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @bp.route('/<int:patient_id>/visits', methods=['POST'])
 def create_visit(patient_id):
     """Create a new visit for a patient"""

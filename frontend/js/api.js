@@ -46,6 +46,10 @@ class API {
         return this.request(`/patients/${patientId}/visits`, 'POST', { chief_complaint: chiefComplaint });
     }
 
+    static async getPatientVisits(patientId) {
+        return this.request(`/patients/${patientId}/visits`);
+    }
+
     // Observation APIs
     static async getObservations(visitId) {
         return this.request(`/observations/visit/${visitId}`);
