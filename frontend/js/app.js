@@ -273,17 +273,20 @@ class TCMApp {
             // Store observation data for each section
             Object.keys(obsData).forEach((sectionKey) => {
                 this.observationData[sectionKey] = obsData[sectionKey].data;
+                console.log(`  ✓ Loaded ${sectionKey}:`, obsData[sectionKey].data);
                 if (obsData[sectionKey].completed) {
                     // Find section index by key
                     const sectionIndex = OBSERVATION_SECTIONS.findIndex(s => s.id === sectionKey);
                     if (sectionIndex >= 0) {
                         this.completedSectionsObs.add(sectionIndex);
+                        console.log(`    ✓ Marked section ${sectionIndex} (${sectionKey}) as completed`);
                     }
                 }
             });
             
             if (obsCount >= 12) { // All 12 sections completed
                 this.completedModules.add('observation');
+                console.log('✅ Observation module marked as COMPLETED');
             }
             
             // Load interrogation data into memory
@@ -294,19 +297,29 @@ class TCMApp {
             // Store interrogation data for each section
             Object.keys(intData).forEach((sectionKey) => {
                 this.interrogationData[sectionKey] = intData[sectionKey].data;
+                console.log(`  ✓ Loaded ${sectionKey}:`, intData[sectionKey].data);
                 if (intData[sectionKey].completed) {
                     // Find section index by key
                     const sectionIndex = INTERROGATION_SECTIONS.findIndex(s => s.id === sectionKey);
                     if (sectionIndex >= 0) {
                         this.completedSectionsInt.add(sectionIndex);
+                        console.log(`    ✓ Marked section ${sectionIndex} (${sectionKey}) as completed`);
                     }
                 }
             });
             
             if (intCount >= 12) { // All 12 sections completed
                 this.completedModules.add('interrogation');
+                console.log('✅ Interrogation module marked as COMPLETED');
             }
 
+            
+            console.log('💾 Final state:');
+            console.log('  observationData keys:', Object.keys(this.observationData));
+            console.log('  interrogationData keys:', Object.keys(this.interrogationData));
+            console.log('  completedSectionsObs:', Array.from(this.completedSectionsObs));
+            console.log('  completedSectionsInt:', Array.from(this.completedSectionsInt));
+            console.log('  completedModules:', Array.from(this.completedModules));
             
             console.log('💾 Final state:');
             console.log('  observationData keys:', Object.keys(this.observationData));
@@ -534,33 +547,57 @@ class TCMApp {
 
     loadSectionData(sectionId, module) {
         const data = module === 'observation' ? this.observationData : this.interrogationData;
-        if (!data[sectionId]) return;
+        console.log(`🔄 loadSectionData called: module=${module}, sectionId=${sectionId}`);
+        console.log('  Available data:', Object.keys(data));
+        
+        if (!data[sectionId]) {
+            console.log(`  ⚠️  No data found for section "${sectionId}"`);
+            return;
+        }
 
         const sectionData = data[sectionId];
+        console.log(`  📝 Loading ${Object.keys(sectionData).length} fields:`, sectionData);
+        
         for (const [key, value] of Object.entries(sectionData)) {
             const fieldId = `${module}_${sectionId}_${key}`;
             
             if (Array.isArray(value)) {
                 // Multiselect checkbox
+                console.log(`    Loading multiselect ${key}:`, value);
                 value.forEach(v => {
                     const optionId = v.replace(/[^a-zA-Z0-9]/g, '_');
                     const checkbox = document.getElementById(`${fieldId}_${optionId}`);
-                    if (checkbox) checkbox.checked = true;
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        console.log(`      ✓ Checked: ${fieldId}_${optionId}`);
+                    } else {
+                        console.log(`      ✗ Not found: ${fieldId}_${optionId}`);
+                    }
                 });
             } else {
                 // Select dropdown or textarea
-                const select = document.getElementById(fieldId);
-                if (select && select.tagName === 'SELECT') {
-                    select.value = value;
-                } else if (select && select.tagName === 'TEXTAREA') {
-                    select.value = value;
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    if (element.tagName === 'SELECT') {
+                        element.value = value;
+                        console.log(`    ✓ Set select ${key} = ${value}`);
+                    } else if (element.tagName === 'TEXTAREA') {
+                        element.value = value;
+                        console.log(`    ✓ Set textarea ${key} = ${value}`);
+                    }
                 } else {
                     // Radio button
                     const radio = document.getElementById(`${fieldId}_${value}`);
-                    if (radio) radio.checked = true;
+                    if (radio) {
+                        radio.checked = true;
+                        console.log(`    ✓ Checked radio ${key} = ${value}`);
+                    } else {
+                        console.log(`    ✗ Radio not found: ${fieldId}_${value}`);
+                    }
                 }
             }
         }
+        console.log(`  ✅ Finished loading section "${sectionId}"`);
     }
 
     saveCurrentSection() {
