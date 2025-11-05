@@ -181,9 +181,9 @@ class TCMApp {
             const response = await API.createPatient(patientData);
             this.currentPatient = { id: response.patient_id, ...patientData };
 
-            const chiefComplaint = document.getElementById('chief-complaint').value || null;
-            const visitResponse = await API.createVisit(response.patient_id, chiefComplaint);
-            this.currentVisit = { id: visitResponse.visit_id, chief_complaint: chiefComplaint };
+            // Create visit without chief complaint (will be added via Chief Complaint module)
+            const visitResponse = await API.createVisit(response.patient_id, null);
+            this.currentVisit = { id: visitResponse.visit_id };
 
             document.getElementById('current-patient-name').textContent = patientData.name;
             this.showScreen('module-select');
