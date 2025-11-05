@@ -183,16 +183,45 @@ class TCMApp {
         const container = document.getElementById('patients-container');
         const list = document.getElementById('patients-list');
         
-        let html = '<h3>Select Visit</h3>';
+        let html = `<h3>Select Visit for ${this.currentPatient.name}</h3>`;
         html += '<div class="visit-cards">';
         
-        // Show existing visits
-        visits.forEach(visit => {
-            const date = new Date(visit.visit_date).toLocaleDateString();
+        // Show existing visits (most recent first)
+        visits.sort((a, b) => new Date(b.visit_date) - new Date(a.visit_date));
+        
+        visits.forEach((visit, index) => {
+            const date = new Date(visit.visit_date);
+            const dateStr = date.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const chiefComplaintPreview = visit.chief_complaint 
+                ? visit.chief_complaint.substring(0, 60) + (visit.chief_complaint.length > 60 ? '...' : '')
+                : 'No chief complaint';
+            
+            const statusBadge = visit.status === 'completed' 
+                ? '<span style="color: #4caf50;">●</span> Completed'
+                : '<span style="color: #ff9800;">●</span> In Progress';
+            
             html += `
                 <div class="patient-card visit-card" onclick="app.selectVisit(${visit.id})">
-                    <div class="patient-name">Visit: ${date}</div>
-                    <div class="patient-info">Status: ${visit.status}</div>
+                    <div class="patient-name">
+                        ${index === 0 ? '<span style="background: #4caf50; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.75rem; margin-right: 0.5rem;">LATEST</span>' : ''}
+                        Visit ${visits.length - index}
+                    </div>
+                    <div class="patient-info" style="font-size: 0.85rem; margin-top: 0.3rem;">
+                        📅 ${dateStr}
+                    </div>
+                    <div class="patient-info" style="font-size: 0.8rem; color: #666; margin-top: 0.3rem; font-style: italic;">
+                        ${chiefComplaintPreview}
+                    </div>
+                    <div class="patient-info" style="margin-top: 0.5rem; font-weight: 600;">
+                        ${statusBadge}
+                    </div>
                 </div>
             `;
         });
