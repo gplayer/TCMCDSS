@@ -237,7 +237,15 @@ class TCMApp {
     async selectVisit(visitId) {
         this.showLoading(true);
         try {
+            console.log('🔍 Loading visit:', visitId);
             this.currentVisit = { id: visitId };
+            
+            // Reset state
+            this.observationData = {};
+            this.interrogationData = {};
+            this.completedSectionsObs.clear();
+            this.completedSectionsInt.clear();
+            this.completedModules.clear();
             
             // Load existing data to determine module completion status
             const [chiefComplaint, observations, interrogations] = await Promise.all([
@@ -245,6 +253,11 @@ class TCMApp {
                 API.getObservations(visitId).catch(() => ({ observations: {} })),
                 API.getInterrogations(visitId).catch(() => ({ interrogations: {} }))
             ]);
+            
+            console.log('📥 Data received:');
+            console.log('  Chief Complaint:', chiefComplaint);
+            console.log('  Observations:', observations);
+            console.log('  Interrogations:', interrogations);
             
             // Check chief complaint completion
             if (chiefComplaint && chiefComplaint.chief_complaint && 
@@ -255,6 +268,7 @@ class TCMApp {
             // Load observation data into memory
             const obsData = observations.observations || {};
             const obsCount = Object.keys(obsData).length;
+            console.log(`📊 Observation sections found: ${obsCount}`, Object.keys(obsData));
             
             // Store observation data for each section
             Object.keys(obsData).forEach((sectionKey) => {
@@ -275,6 +289,7 @@ class TCMApp {
             // Load interrogation data into memory
             const intData = interrogations.interrogations || {};
             const intCount = Object.keys(intData).length;
+            console.log(`📊 Interrogation sections found: ${intCount}`, Object.keys(intData));
             
             // Store interrogation data for each section
             Object.keys(intData).forEach((sectionKey) => {
@@ -291,9 +306,18 @@ class TCMApp {
             if (intCount >= 12) { // All 12 sections completed
                 this.completedModules.add('interrogation');
             }
+
+            
+            console.log('💾 Final state:');
+            console.log('  observationData keys:', Object.keys(this.observationData));
+            console.log('  interrogationData keys:', Object.keys(this.interrogationData));
+            console.log('  completedSectionsObs:', Array.from(this.completedSectionsObs));
+            console.log('  completedSectionsInt:', Array.from(this.completedSectionsInt));
+            console.log('  completedModules:', Array.from(this.completedModules));
             
             this.showScreen('module-select');
         } catch (error) {
+            console.error('❌ Error loading visit:', error);
             alert('Error loading visit: ' + error.message);
         } finally {
             this.showLoading(false);
