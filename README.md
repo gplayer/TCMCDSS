@@ -49,3 +49,5 @@ Includes 20 most common patterns:
 
 Proprietary - All rights reserved
 # Cloudflare deployment with D1
+## D1 Database Enabled
+
