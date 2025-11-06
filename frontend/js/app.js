@@ -497,10 +497,18 @@ class TCMApp {
         const contentId = module === 'observation' ? 'observation-content' : 'interrogation-content';
         const content = document.getElementById(contentId);
         
+        // Check if this section has existing data
+        const data = module === 'observation' ? this.observationData : this.interrogationData;
+        const hasExistingData = data[section.id] && Object.keys(data[section.id]).length > 0;
+        const editModeIndicator = hasExistingData 
+            ? '<div style="background: #ffe0b2; padding: 8px; border-radius: 4px; margin-bottom: 10px; font-size: 0.9em;">✏️ <strong>Edit Mode:</strong> This section contains existing data. You can modify any field and changes will be saved automatically.</div>' 
+            : '';
+        
         let html = `
             <div class="section-content">
                 <h3>${section.title}</h3>
                 <p class="section-description">${section.description}</p>
+                ${editModeIndicator}
                 <form id="${module}-form">
         `;
 
