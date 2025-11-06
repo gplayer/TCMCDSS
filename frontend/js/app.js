@@ -733,10 +733,12 @@ class TCMApp {
 
     async analyzePatterns(module) {
         try {
+            console.log('🔍 Analyzing patterns for visit:', this.currentVisit.id);
             const response = await API.analyzePatterns(this.currentVisit.id);
+            console.log('📊 Pattern analysis response:', response);
             this.displayPatternAnalysis(response, module);
         } catch (error) {
-            console.error('Error analyzing patterns:', error);
+            console.error('❌ Error analyzing patterns:', error);
         }
     }
 
@@ -744,10 +746,15 @@ class TCMApp {
         const suffix = module === 'observation' ? '' : '-int';
         const container = document.getElementById(`pattern-results${suffix}`);
         
+        console.log(`📺 Displaying patterns in container: pattern-results${suffix}`, analysis);
+        
         if (!analysis.patterns || analysis.patterns.length === 0) {
+            console.log('⚠️  No patterns to display');
             container.innerHTML = '<p style="color: #999;">Enter data to see pattern analysis...</p>';
             return;
         }
+        
+        console.log(`✅ Displaying ${analysis.patterns.length} patterns`);
 
         let html = '';
         
