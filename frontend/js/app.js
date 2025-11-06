@@ -1056,226 +1056,374 @@ class TCMApp {
             });
             yPos += 30;
             
-            // Patient Information
+            // Patient Information Section with Table
+            doc.setFillColor(52, 152, 219);
+            doc.rect(margin, yPos, contentWidth, 8, 'F');
+            doc.setTextColor(255, 255, 255);
             doc.setFontSize(12);
             doc.setFont(undefined, 'bold');
-            doc.text('Patient Information', margin, yPos);
-            yPos += 8;
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(10);
-            
-            doc.text(`Name: ${this.currentPatient.name}`, margin, yPos);
-            yPos += 6;
-            if (this.currentPatient.date_of_birth) {
-                doc.text(`Date of Birth: ${this.currentPatient.date_of_birth}`, margin, yPos);
-                yPos += 6;
-            }
-            if (this.currentPatient.gender) {
-                doc.text(`Gender: ${this.currentPatient.gender}`, margin, yPos);
-                yPos += 6;
-            }
-            if (this.currentPatient.phone) {
-                doc.text(`Phone: ${this.currentPatient.phone}`, margin, yPos);
-                yPos += 6;
-            }
-            if (this.currentPatient.email) {
-                doc.text(`Email: ${this.currentPatient.email}`, margin, yPos);
-                yPos += 6;
-            }
-            
-            const visitDate = new Date().toLocaleDateString();
-            doc.text(`Visit Date: ${visitDate}`, margin, yPos);
+            doc.text('PATIENT INFORMATION', margin + 3, yPos + 5.5);
+            doc.setTextColor(0, 0, 0);
             yPos += 10;
             
-            // Observation Data
+            // Patient info table
+            const patientInfo = [
+                ['Name:', this.currentPatient.name],
+                ['Date of Birth:', this.currentPatient.date_of_birth || 'Not provided'],
+                ['Gender:', this.currentPatient.gender ? this.currentPatient.gender.charAt(0).toUpperCase() + this.currentPatient.gender.slice(1) : 'Not specified'],
+                ['Phone:', this.currentPatient.phone || 'Not provided'],
+                ['Email:', this.currentPatient.email || 'Not provided'],
+                ['Visit Date:', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })]
+            ];
+            
+            doc.autoTable({
+                startY: yPos,
+                head: [],
+                body: patientInfo,
+                theme: 'plain',
+                styles: { 
+                    fontSize: 10, 
+                    cellPadding: 3,
+                    lineColor: [200, 200, 200],
+                    lineWidth: 0.1
+                },
+                columnStyles: {
+                    0: { fontStyle: 'bold', cellWidth: 40, fillColor: [245, 245, 245] },
+                    1: { cellWidth: 'auto' }
+                },
+                margin: { left: margin, right: margin }
+            });
+            
+            yPos = doc.lastAutoTable.finalY + 12;
+            
+            // Observation Data with Professional Tables
             if (Object.keys(this.observationData).length > 0) {
+                // Module Header
+                doc.setFillColor(46, 125, 50);
+                doc.rect(margin, yPos, contentWidth, 8, 'F');
+                doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
                 doc.setFont(undefined, 'bold');
-                doc.text('Observation Data (望 Wàng)', margin, yPos);
-                yPos += 8;
-                doc.setFont(undefined, 'normal');
-                doc.setFontSize(10);
+                doc.text('MODULE 1: OBSERVATION (望 Wàng)', margin + 3, yPos + 5.5);
+                doc.setTextColor(0, 0, 0);
+                yPos += 10;
                 
                 for (const [sectionKey, sectionData] of Object.entries(this.observationData)) {
                     const section = OBSERVATION_SECTIONS.find(s => s.id === sectionKey);
                     if (section && sectionData && Object.keys(sectionData).length > 0) {
-                        doc.setFont(undefined, 'bold');
-                        doc.text(`  ${section.title}:`, margin, yPos);
-                        yPos += 6;
-                        doc.setFont(undefined, 'normal');
-                        
-                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
-                            const field = section.fields.find(f => f.id === fieldKey);
-                            if (field) {
-                                const displayValue = Array.isArray(fieldValue) 
-                                    ? fieldValue.join(', ') 
-                                    : fieldValue;
-                                const text = `    ${field.label}: ${displayValue}`;
-                                const lines = doc.splitTextToSize(text, contentWidth - 10);
-                                lines.forEach(line => {
-                                    if (yPos > 270) {
-                                        doc.addPage();
-                                        yPos = 20;
-                                    }
-                                    doc.text(line, margin + 5, yPos);
-                                    yPos += 5;
-                                });
-                            }
-                        }
-                        yPos += 3;
-                    }
-                }
-                yPos += 5;
-            }
-            
-            // Interrogation Data
-            if (Object.keys(this.interrogationData).length > 0) {
-                if (yPos > 250) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-                
-                doc.setFontSize(12);
-                doc.setFont(undefined, 'bold');
-                doc.text('Interrogation Data (問 Wèn)', margin, yPos);
-                yPos += 8;
-                doc.setFont(undefined, 'normal');
-                doc.setFontSize(10);
-                
-                for (const [sectionKey, sectionData] of Object.entries(this.interrogationData)) {
-                    const section = INTERROGATION_SECTIONS.find(s => s.id === sectionKey);
-                    if (section && sectionData && Object.keys(sectionData).length > 0) {
-                        doc.setFont(undefined, 'bold');
-                        doc.text(`  ${section.title}:`, margin, yPos);
-                        yPos += 6;
-                        doc.setFont(undefined, 'normal');
-                        
-                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
-                            const field = section.fields.find(f => f.id === fieldKey);
-                            if (field) {
-                                const displayValue = Array.isArray(fieldValue) 
-                                    ? fieldValue.join(', ') 
-                                    : fieldValue;
-                                const text = `    ${field.label}: ${displayValue}`;
-                                const lines = doc.splitTextToSize(text, contentWidth - 10);
-                                lines.forEach(line => {
-                                    if (yPos > 270) {
-                                        doc.addPage();
-                                        yPos = 20;
-                                    }
-                                    doc.text(line, margin + 5, yPos);
-                                    yPos += 5;
-                                });
-                            }
-                        }
-                        yPos += 3;
-                    }
-                }
-                yPos += 5;
-            }
-            
-            // TCM Profile
-            try {
-                const tcmProfile = await API.getTCMProfile(this.currentVisit.id);
-                if (tcmProfile && tcmProfile.profile) {
-                    if (yPos > 220) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'bold');
-                    doc.text('TCM Constitutional Profile', margin, yPos);
-                    yPos += 8;
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(10);
-                    
-                    const profile = tcmProfile.profile;
-                    
-                    if (profile.eight_principles) {
-                        doc.text(`  Eight Principles:`, margin, yPos);
-                        yPos += 6;
-                        doc.text(`    Interior/Exterior: ${profile.eight_principles.interior_exterior || 'N/A'}`, margin, yPos);
-                        yPos += 5;
-                        doc.text(`    Hot/Cold: ${profile.eight_principles.hot_cold || 'N/A'}`, margin, yPos);
-                        yPos += 5;
-                        doc.text(`    Excess/Deficiency: ${profile.eight_principles.excess_deficiency || 'N/A'}`, margin, yPos);
-                        yPos += 5;
-                        doc.text(`    Yin/Yang: ${profile.eight_principles.yin_yang || 'N/A'}`, margin, yPos);
-                        yPos += 8;
-                    }
-                    
-                    if (profile.affected_organs && profile.affected_organs.length > 0) {
-                        doc.text(`  Affected Organs: ${profile.affected_organs.join(', ')}`, margin, yPos);
-                        yPos += 8;
-                    }
-                    
-                    if (profile.pathogenic_factors && profile.pathogenic_factors.length > 0) {
-                        doc.text(`  Pathogenic Factors: ${profile.pathogenic_factors.join(', ')}`, margin, yPos);
-                        yPos += 8;
-                    }
-                    
-                    if (profile.qi_blood_fluids && profile.qi_blood_fluids.length > 0) {
-                        doc.text(`  Qi/Blood/Fluids Patterns: ${profile.qi_blood_fluids.join(', ')}`, margin, yPos);
-                        yPos += 8;
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching TCM profile:', error);
-            }
-            
-            // Pattern Analysis
-            try {
-                const patterns = await API.analyzePatterns(this.currentVisit.id);
-                if (patterns && patterns.patterns && patterns.patterns.length > 0) {
-                    if (yPos > 200) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'bold');
-                    doc.text('Pattern Analysis & Diagnosis', margin, yPos);
-                    yPos += 8;
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(10);
-                    
-                    patterns.patterns.slice(0, 5).forEach((pattern, index) => {
+                        // Check if we need a new page
                         if (yPos > 250) {
                             doc.addPage();
                             yPos = 20;
                         }
                         
+                        // Section header with light background
+                        doc.setFillColor(232, 245, 233);
+                        doc.rect(margin, yPos, contentWidth, 7, 'F');
+                        doc.setFontSize(11);
                         doc.setFont(undefined, 'bold');
-                        doc.text(`${index + 1}. ${pattern.name} (Confidence: ${pattern.confidence}%)`, margin, yPos);
-                        yPos += 6;
-                        doc.setFont(undefined, 'normal');
+                        doc.setTextColor(46, 125, 50);
+                        doc.text(section.title, margin + 2, yPos + 5);
+                        doc.setTextColor(0, 0, 0);
+                        yPos += 9;
                         
+                        // Create table data for this section
+                        const sectionTableData = [];
+                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
+                            const field = section.fields.find(f => f.id === fieldKey);
+                            if (field) {
+                                const displayValue = Array.isArray(fieldValue) 
+                                    ? fieldValue.join(', ') 
+                                    : fieldValue.toString();
+                                sectionTableData.push([field.label, displayValue]);
+                            }
+                        }
+                        
+                        // Render table
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [],
+                            body: sectionTableData,
+                            theme: 'striped',
+                            styles: { 
+                                fontSize: 9, 
+                                cellPadding: 3,
+                                lineColor: [200, 200, 200],
+                                lineWidth: 0.1
+                            },
+                            columnStyles: {
+                                0: { fontStyle: 'bold', cellWidth: 55, fillColor: [250, 250, 250] },
+                                1: { cellWidth: 'auto' }
+                            },
+                            alternateRowStyles: { fillColor: [252, 252, 252] },
+                            margin: { left: margin, right: margin }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 5;
+                    }
+                }
+                yPos += 5;
+            }
+            
+            // Interrogation Data with Professional Tables
+            if (Object.keys(this.interrogationData).length > 0) {
+                if (yPos > 230) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                // Module Header
+                doc.setFillColor(156, 39, 176);
+                doc.rect(margin, yPos, contentWidth, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('MODULE 2: INTERROGATION (問 Wèn)', margin + 3, yPos + 5.5);
+                doc.setTextColor(0, 0, 0);
+                yPos += 10;
+                
+                for (const [sectionKey, sectionData] of Object.entries(this.interrogationData)) {
+                    const section = INTERROGATION_SECTIONS.find(s => s.id === sectionKey);
+                    if (section && sectionData && Object.keys(sectionData).length > 0) {
+                        // Check if we need a new page
+                        if (yPos > 250) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        
+                        // Section header with light background
+                        doc.setFillColor(243, 229, 245);
+                        doc.rect(margin, yPos, contentWidth, 7, 'F');
+                        doc.setFontSize(11);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(156, 39, 176);
+                        doc.text(section.title, margin + 2, yPos + 5);
+                        doc.setTextColor(0, 0, 0);
+                        yPos += 9;
+                        
+                        // Create table data for this section
+                        const sectionTableData = [];
+                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
+                            const field = section.fields.find(f => f.id === fieldKey);
+                            if (field) {
+                                const displayValue = Array.isArray(fieldValue) 
+                                    ? fieldValue.join(', ') 
+                                    : fieldValue.toString();
+                                sectionTableData.push([field.label, displayValue]);
+                            }
+                        }
+                        
+                        // Render table
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [],
+                            body: sectionTableData,
+                            theme: 'striped',
+                            styles: { 
+                                fontSize: 9, 
+                                cellPadding: 3,
+                                lineColor: [200, 200, 200],
+                                lineWidth: 0.1
+                            },
+                            columnStyles: {
+                                0: { fontStyle: 'bold', cellWidth: 55, fillColor: [250, 250, 250] },
+                                1: { cellWidth: 'auto' }
+                            },
+                            alternateRowStyles: { fillColor: [252, 252, 252] },
+                            margin: { left: margin, right: margin }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 5;
+                    }
+                }
+                yPos += 5;
+            }
+            
+            // TCM Constitutional Profile with Professional Table
+            try {
+                const tcmProfile = await API.getTCMProfile(this.currentVisit.id);
+                if (tcmProfile && tcmProfile.profile) {
+                    if (yPos > 200) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    // Module Header
+                    doc.setFillColor(255, 152, 0);
+                    doc.rect(margin, yPos, contentWidth, 8, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('TCM CONSTITUTIONAL PROFILE', margin + 3, yPos + 5.5);
+                    doc.setTextColor(0, 0, 0);
+                    yPos += 10;
+                    
+                    const profile = tcmProfile.profile;
+                    const profileData = [];
+                    
+                    // Eight Principles
+                    if (profile.eight_principles) {
+                        profileData.push(['EIGHT PRINCIPLES', '']);
+                        profileData.push(['Interior/Exterior', profile.eight_principles.interior_exterior || 'Not determined']);
+                        profileData.push(['Hot/Cold', profile.eight_principles.hot_cold || 'Not determined']);
+                        profileData.push(['Excess/Deficiency', profile.eight_principles.excess_deficiency || 'Not determined']);
+                        profileData.push(['Yin/Yang', profile.eight_principles.yin_yang || 'Not determined']);
+                    }
+                    
+                    // Affected Organs
+                    if (profile.affected_organs && profile.affected_organs.length > 0) {
+                        profileData.push(['AFFECTED ORGANS', profile.affected_organs.join(', ')]);
+                    }
+                    
+                    // Pathogenic Factors
+                    if (profile.pathogenic_factors && profile.pathogenic_factors.length > 0) {
+                        profileData.push(['PATHOGENIC FACTORS', profile.pathogenic_factors.join(', ')]);
+                    }
+                    
+                    // Qi/Blood/Fluids
+                    if (profile.qi_blood_fluids && profile.qi_blood_fluids.length > 0) {
+                        profileData.push(['QI/BLOOD/FLUIDS', profile.qi_blood_fluids.join(', ')]);
+                    }
+                    
+                    // Render TCM Profile Table
+                    doc.autoTable({
+                        startY: yPos,
+                        head: [],
+                        body: profileData,
+                        theme: 'grid',
+                        styles: { 
+                            fontSize: 10, 
+                            cellPadding: 4,
+                            lineColor: [200, 200, 200],
+                            lineWidth: 0.2
+                        },
+                        columnStyles: {
+                            0: { 
+                                fontStyle: 'bold', 
+                                cellWidth: 60, 
+                                fillColor: [255, 243, 224],
+                                textColor: [191, 87, 0]
+                            },
+                            1: { cellWidth: 'auto', fillColor: [255, 255, 255] }
+                        },
+                        didParseCell: function(data) {
+                            // Make section headers span both columns
+                            if (data.row.raw[0] && data.row.raw[1] === '' && 
+                                ['EIGHT PRINCIPLES', 'AFFECTED ORGANS', 'PATHOGENIC FACTORS', 'QI/BLOOD/FLUIDS'].includes(data.row.raw[0])) {
+                                if (data.column.index === 0) {
+                                    data.cell.colSpan = 2;
+                                    data.cell.styles.fillColor = [255, 152, 0];
+                                    data.cell.styles.textColor = [255, 255, 255];
+                                    data.cell.styles.fontStyle = 'bold';
+                                    data.cell.styles.halign = 'center';
+                                }
+                            }
+                        },
+                        margin: { left: margin, right: margin }
+                    });
+                    
+                    yPos = doc.lastAutoTable.finalY + 8;
+                }
+            } catch (error) {
+                console.error('Error fetching TCM profile:', error);
+            }
+            
+            // Pattern Analysis & Diagnosis with Professional Formatting
+            try {
+                const patterns = await API.analyzePatterns(this.currentVisit.id);
+                if (patterns && patterns.patterns && patterns.patterns.length > 0) {
+                    if (yPos > 180) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    // Module Header
+                    doc.setFillColor(211, 47, 47);
+                    doc.rect(margin, yPos, contentWidth, 8, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('PATTERN ANALYSIS & DIAGNOSIS', margin + 3, yPos + 5.5);
+                    doc.setTextColor(0, 0, 0);
+                    yPos += 10;
+                    
+                    patterns.patterns.slice(0, 5).forEach((pattern, index) => {
+                        if (yPos > 230) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        
+                        // Pattern box with gradient-like header
+                        const boxStart = yPos;
+                        
+                        // Pattern name header
+                        doc.setFillColor(255, 235, 238);
+                        doc.rect(margin, yPos, contentWidth, 8, 'F');
+                        doc.setDrawColor(211, 47, 47);
+                        doc.rect(margin, yPos, contentWidth, 8, 'S');
+                        
+                        doc.setFontSize(11);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(183, 28, 28);
+                        doc.text(`${index + 1}. ${pattern.name}`, margin + 2, yPos + 5.5);
+                        
+                        // Confidence badge
+                        const confidence = pattern.confidence;
+                        const confidenceColor = confidence >= 70 ? [76, 175, 80] : confidence >= 50 ? [255, 152, 0] : [158, 158, 158];
+                        doc.setFillColor(...confidenceColor);
+                        const confidenceText = `${confidence}%`;
+                        const confidenceWidth = doc.getTextWidth(confidenceText) + 8;
+                        doc.roundedRect(pageWidth - margin - confidenceWidth - 2, yPos + 2, confidenceWidth, 5, 1, 1, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(9);
+                        doc.text(confidenceText, pageWidth - margin - confidenceWidth + 3, yPos + 5.5);
+                        
+                        doc.setTextColor(0, 0, 0);
+                        yPos += 10;
+                        
+                        // Pattern details table
+                        const patternDetails = [];
                         if (pattern.description) {
-                            const lines = doc.splitTextToSize(`   Description: ${pattern.description}`, contentWidth);
-                            lines.forEach(line => {
-                                if (yPos > 270) {
-                                    doc.addPage();
-                                    yPos = 20;
-                                }
-                                doc.text(line, margin, yPos);
-                                yPos += 5;
-                            });
+                            patternDetails.push(['Description', pattern.description]);
                         }
-                        
                         if (pattern.treatment_principle) {
-                            const lines = doc.splitTextToSize(`   Treatment Principle: ${pattern.treatment_principle}`, contentWidth);
-                            lines.forEach(line => {
-                                if (yPos > 270) {
-                                    doc.addPage();
-                                    yPos = 20;
-                                }
-                                doc.text(line, margin, yPos);
-                                yPos += 5;
-                            });
+                            patternDetails.push(['Treatment Principle', pattern.treatment_principle]);
+                        }
+                        if (pattern.herbal_formula) {
+                            patternDetails.push(['Recommended Formula', pattern.herbal_formula]);
+                        }
+                        if (pattern.acupuncture_points) {
+                            patternDetails.push(['Key Acupuncture Points', pattern.acupuncture_points]);
                         }
                         
-                        yPos += 3;
+                        if (patternDetails.length > 0) {
+                            doc.autoTable({
+                                startY: yPos,
+                                head: [],
+                                body: patternDetails,
+                                theme: 'plain',
+                                styles: { 
+                                    fontSize: 9, 
+                                    cellPadding: 3,
+                                    lineColor: [230, 230, 230],
+                                    lineWidth: 0.1
+                                },
+                                columnStyles: {
+                                    0: { 
+                                        fontStyle: 'bold', 
+                                        cellWidth: 50, 
+                                        fillColor: [250, 250, 250],
+                                        textColor: [100, 100, 100]
+                                    },
+                                    1: { cellWidth: 'auto' }
+                                },
+                                margin: { left: margin, right: margin }
+                            });
+                            
+                            yPos = doc.lastAutoTable.finalY;
+                        }
+                        
+                        yPos += 7;
                     });
                 }
             } catch (error) {
