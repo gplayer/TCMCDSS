@@ -6,4 +6,4 @@ pages_build_output_dir = "frontend"
 [[d1_databases]]
 binding = "DB"
 database_name = "tcmcdss-db"
-database_id = "placeholder-will-be-generated"
+database_id = "5598e403-7032-4ea5-b1ba-2592be0a5663"
