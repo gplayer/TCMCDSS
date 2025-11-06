@@ -1,5 +1,6 @@
 // API Configuration and Functions
-const API_BASE_URL = 'https://gplayer.pythonanywhere.com/api';
+// Using Cloudflare Pages Functions (same domain)
+const API_BASE_URL = '/api';
 
 class API {
     static async request(endpoint, method = 'GET', data = null) {
