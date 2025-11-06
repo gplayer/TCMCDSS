@@ -60,13 +60,21 @@ function analyzePatterns(observations, interrogations) {
     let spleenQiScore = 0;
     const spleenQiEvidence = [];
     
-    if (observations.tongue?.color === 'pale') {
+    if (observations.tongue?.body_color === 'pale') {
         spleenQiScore += 20;
         spleenQiEvidence.push('Pale tongue indicates Qi/Blood deficiency');
     }
-    if (observations.tongue?.body_type === 'swollen') {
+    if (observations.tongue?.body_shape === 'swollen') {
         spleenQiScore += 15;
         spleenQiEvidence.push('Swollen tongue indicates Spleen Qi deficiency with dampness');
+    }
+    if (observations.tongue?.body_shape === 'thin') {
+        spleenQiScore += 10;
+        spleenQiEvidence.push('Thin tongue may indicate Qi/Blood deficiency');
+    }
+    if (observations.tongue?.features?.includes('tooth_marked')) {
+        spleenQiScore += 15;
+        spleenQiEvidence.push('Tooth-marked tongue indicates Spleen Qi deficiency with dampness');
     }
     if (interrogations.digestion?.stools === 'loose') {
         spleenQiScore += 25;
