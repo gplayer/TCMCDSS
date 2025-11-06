@@ -96,11 +96,11 @@ class API {
 
     // Chief Complaint APIs
     static async saveChiefComplaint(visitId, chiefComplaintData) {
-        return this.request(`/chief-complaint/visit/${visitId}`, 'POST', chiefComplaintData);
+        return this.request(`/chief-complaints/visit/${visitId}`, 'POST', chiefComplaintData);
     }
 
     static async getChiefComplaint(visitId) {
-        return this.request(`/chief-complaint/visit/${visitId}`);
+        return this.request(`/chief-complaints/visit/${visitId}`);
     }
 
     // TCM Reasoning APIs

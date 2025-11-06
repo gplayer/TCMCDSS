@@ -851,7 +851,6 @@ class TCMApp {
                     <div class="result-pattern">
                         <h3>${index + 1}. ${pattern.name}</h3>
                         <div class="confidence">${pattern.confidence}% Confidence</div>
-                        <p><strong>Category:</strong> ${pattern.category}</p>
                         <p><strong>Description:</strong> ${pattern.description}</p>
                         <p><strong>Treatment Principle:</strong> ${pattern.treatment_principle}</p>
                         
@@ -860,8 +859,10 @@ class TCMApp {
                             ${pattern.supporting_evidence.map(e => `<li>${e}</li>`).join('')}
                         </ul>
                         
+                        ${pattern.herbal_formula ? `<p><strong>Herbal Formula:</strong> ${pattern.herbal_formula}</p>` : ''}
+                        
                         <h4>Recommended Acupuncture Points:</h4>
-                        <p>${pattern.common_points.join(', ')}</p>
+                        <p>${pattern.acupuncture_points || 'No specific points recommended'}</p>
                     </div>
                 `;
             });
