@@ -60,6 +60,7 @@ class TCMApp {
         // Results screen
         document.getElementById('btn-back-to-modules').addEventListener('click', () => this.showScreen('module-select'));
         document.getElementById('btn-new-visit').addEventListener('click', () => this.showScreen('home'));
+        document.getElementById('btn-export-pdf').addEventListener('click', () => this.exportPatientReportPDF());
     }
 
     handleLogin(e) {
@@ -993,6 +994,280 @@ class TCMApp {
          */
         const displayValue = value.charAt(0).toUpperCase() + value.slice(1);
         return `<span class="tcm-badge tcm-badge-${type}" title="${label}">${displayValue}</span>`;
+    }
+
+    async exportPatientReportPDF() {
+        if (!this.currentPatient || !this.currentVisit) {
+            alert('No patient or visit data available');
+            return;
+        }
+
+        this.showLoading(true);
+        
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            const margin = 20;
+            const contentWidth = pageWidth - (2 * margin);
+            
+            // Title
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('TCM Clinical Decision Support System', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 10;
+            doc.setFontSize(14);
+            doc.text('Patient Diagnostic Report', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 15;
+            
+            // Patient Information
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Patient Information', margin, yPos);
+            yPos += 8;
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            
+            doc.text(`Name: ${this.currentPatient.name}`, margin, yPos);
+            yPos += 6;
+            if (this.currentPatient.date_of_birth) {
+                doc.text(`Date of Birth: ${this.currentPatient.date_of_birth}`, margin, yPos);
+                yPos += 6;
+            }
+            if (this.currentPatient.gender) {
+                doc.text(`Gender: ${this.currentPatient.gender}`, margin, yPos);
+                yPos += 6;
+            }
+            if (this.currentPatient.phone) {
+                doc.text(`Phone: ${this.currentPatient.phone}`, margin, yPos);
+                yPos += 6;
+            }
+            if (this.currentPatient.email) {
+                doc.text(`Email: ${this.currentPatient.email}`, margin, yPos);
+                yPos += 6;
+            }
+            
+            const visitDate = new Date().toLocaleDateString();
+            doc.text(`Visit Date: ${visitDate}`, margin, yPos);
+            yPos += 10;
+            
+            // Observation Data
+            if (Object.keys(this.observationData).length > 0) {
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('Observation Data (望 Wàng)', margin, yPos);
+                yPos += 8;
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10);
+                
+                for (const [sectionKey, sectionData] of Object.entries(this.observationData)) {
+                    const section = OBSERVATION_SECTIONS.find(s => s.id === sectionKey);
+                    if (section && sectionData && Object.keys(sectionData).length > 0) {
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`  ${section.title}:`, margin, yPos);
+                        yPos += 6;
+                        doc.setFont(undefined, 'normal');
+                        
+                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
+                            const field = section.fields.find(f => f.id === fieldKey);
+                            if (field) {
+                                const displayValue = Array.isArray(fieldValue) 
+                                    ? fieldValue.join(', ') 
+                                    : fieldValue;
+                                const text = `    ${field.label}: ${displayValue}`;
+                                const lines = doc.splitTextToSize(text, contentWidth - 10);
+                                lines.forEach(line => {
+                                    if (yPos > 270) {
+                                        doc.addPage();
+                                        yPos = 20;
+                                    }
+                                    doc.text(line, margin + 5, yPos);
+                                    yPos += 5;
+                                });
+                            }
+                        }
+                        yPos += 3;
+                    }
+                }
+                yPos += 5;
+            }
+            
+            // Interrogation Data
+            if (Object.keys(this.interrogationData).length > 0) {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('Interrogation Data (問 Wèn)', margin, yPos);
+                yPos += 8;
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10);
+                
+                for (const [sectionKey, sectionData] of Object.entries(this.interrogationData)) {
+                    const section = INTERROGATION_SECTIONS.find(s => s.id === sectionKey);
+                    if (section && sectionData && Object.keys(sectionData).length > 0) {
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`  ${section.title}:`, margin, yPos);
+                        yPos += 6;
+                        doc.setFont(undefined, 'normal');
+                        
+                        for (const [fieldKey, fieldValue] of Object.entries(sectionData)) {
+                            const field = section.fields.find(f => f.id === fieldKey);
+                            if (field) {
+                                const displayValue = Array.isArray(fieldValue) 
+                                    ? fieldValue.join(', ') 
+                                    : fieldValue;
+                                const text = `    ${field.label}: ${displayValue}`;
+                                const lines = doc.splitTextToSize(text, contentWidth - 10);
+                                lines.forEach(line => {
+                                    if (yPos > 270) {
+                                        doc.addPage();
+                                        yPos = 20;
+                                    }
+                                    doc.text(line, margin + 5, yPos);
+                                    yPos += 5;
+                                });
+                            }
+                        }
+                        yPos += 3;
+                    }
+                }
+                yPos += 5;
+            }
+            
+            // TCM Profile
+            try {
+                const tcmProfile = await API.getTCMProfile(this.currentVisit.id);
+                if (tcmProfile && tcmProfile.profile) {
+                    if (yPos > 220) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('TCM Constitutional Profile', margin, yPos);
+                    yPos += 8;
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(10);
+                    
+                    const profile = tcmProfile.profile;
+                    
+                    if (profile.eight_principles) {
+                        doc.text(`  Eight Principles:`, margin, yPos);
+                        yPos += 6;
+                        doc.text(`    Interior/Exterior: ${profile.eight_principles.interior_exterior || 'N/A'}`, margin, yPos);
+                        yPos += 5;
+                        doc.text(`    Hot/Cold: ${profile.eight_principles.hot_cold || 'N/A'}`, margin, yPos);
+                        yPos += 5;
+                        doc.text(`    Excess/Deficiency: ${profile.eight_principles.excess_deficiency || 'N/A'}`, margin, yPos);
+                        yPos += 5;
+                        doc.text(`    Yin/Yang: ${profile.eight_principles.yin_yang || 'N/A'}`, margin, yPos);
+                        yPos += 8;
+                    }
+                    
+                    if (profile.affected_organs && profile.affected_organs.length > 0) {
+                        doc.text(`  Affected Organs: ${profile.affected_organs.join(', ')}`, margin, yPos);
+                        yPos += 8;
+                    }
+                    
+                    if (profile.pathogenic_factors && profile.pathogenic_factors.length > 0) {
+                        doc.text(`  Pathogenic Factors: ${profile.pathogenic_factors.join(', ')}`, margin, yPos);
+                        yPos += 8;
+                    }
+                    
+                    if (profile.qi_blood_fluids && profile.qi_blood_fluids.length > 0) {
+                        doc.text(`  Qi/Blood/Fluids Patterns: ${profile.qi_blood_fluids.join(', ')}`, margin, yPos);
+                        yPos += 8;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching TCM profile:', error);
+            }
+            
+            // Pattern Analysis
+            try {
+                const patterns = await API.analyzePatterns(this.currentVisit.id);
+                if (patterns && patterns.patterns && patterns.patterns.length > 0) {
+                    if (yPos > 200) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Pattern Analysis & Diagnosis', margin, yPos);
+                    yPos += 8;
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(10);
+                    
+                    patterns.patterns.slice(0, 5).forEach((pattern, index) => {
+                        if (yPos > 250) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`${index + 1}. ${pattern.name} (Confidence: ${pattern.confidence}%)`, margin, yPos);
+                        yPos += 6;
+                        doc.setFont(undefined, 'normal');
+                        
+                        if (pattern.description) {
+                            const lines = doc.splitTextToSize(`   Description: ${pattern.description}`, contentWidth);
+                            lines.forEach(line => {
+                                if (yPos > 270) {
+                                    doc.addPage();
+                                    yPos = 20;
+                                }
+                                doc.text(line, margin, yPos);
+                                yPos += 5;
+                            });
+                        }
+                        
+                        if (pattern.treatment_principle) {
+                            const lines = doc.splitTextToSize(`   Treatment Principle: ${pattern.treatment_principle}`, contentWidth);
+                            lines.forEach(line => {
+                                if (yPos > 270) {
+                                    doc.addPage();
+                                    yPos = 20;
+                                }
+                                doc.text(line, margin, yPos);
+                                yPos += 5;
+                            });
+                        }
+                        
+                        yPos += 3;
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching patterns:', error);
+            }
+            
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.height - 10, { align: 'center' });
+                doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, doc.internal.pageSize.height - 5, { align: 'center' });
+            }
+            
+            // Save PDF
+            const fileName = `TCM_Report_${this.currentPatient.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+            
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF report: ' + error.message);
+        } finally {
+            this.showLoading(false);
+        }
     }
 }
 
