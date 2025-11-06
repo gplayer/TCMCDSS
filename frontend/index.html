@@ -3,27 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCM Clinical Decision Support System</title>
+    <title>Longenix Health - TCM Clinical Decision Support System</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <h1>TCM Clinical Decision Support System</h1>
+            <div>
+                <h1>Longenix Health</h1>
+                <div style="font-size: 0.9em; color: #95a5a6; margin-top: -5px;">TCM Clinical Decision Support System</div>
+            </div>
             <div class="header-actions">
                 <span id="current-patient-name"></span>
                 <button id="btn-home" class="btn btn-secondary">Home</button>
             </div>
         </header>
 
+        <!-- Professional Use Disclaimer Banner -->
+        <div style="background: #fff3cd; border-bottom: 2px solid #f0ad4e; padding: 10px 20px; text-align: center;">
+            <strong style="color: #856404;">⚠️ PROFESSIONAL USE ONLY - NOT A MEDICAL DEVICE</strong>
+            <div style="font-size: 0.85em; color: #856404; margin-top: 3px;">
+                For licensed TCM practitioners only. Clinical decision support tool - does not replace professional judgment.
+            </div>
+        </div>
+
         <!-- Main Content Area -->
         <main class="app-main">
             <!-- Login Screen -->
             <div id="screen-login" class="screen active">
-                <div class="welcome-card" style="max-width: 400px; margin: 0 auto;">
-                    <h2>🔐 TCM CDSS Login</h2>
-                    <p>Please enter the system password to continue</p>
+                <div class="welcome-card" style="max-width: 600px; margin: 0 auto;">
+                    <h2>🔐 Longenix Health TCM CDSS</h2>
+                    <p style="color: #7f8c8d;">Clinical Decision Support System for Traditional Chinese Medicine</p>
+                    
+                    <div style="background: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; text-align: left; font-size: 0.9em;">
+                        <strong style="color: #2c3e50;">IMPORTANT DISCLAIMER:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px; color: #34495e;">
+                            <li>This software is intended <strong>solely for use by licensed healthcare practitioners</strong> as a clinical decision support tool and educational resource.</li>
+                            <li>This system is <strong>NOT intended to diagnose, treat, cure, or prevent</strong> any disease or medical condition.</li>
+                            <li>This software <strong>does not constitute medical advice</strong> and is not a substitute for professional medical judgment, diagnosis, or treatment.</li>
+                            <li>All clinical decisions must be made by <strong>qualified healthcare practitioners</strong> based on their professional assessment of individual patient circumstances.</li>
+                            <li>This is <strong>NOT a medical device</strong>.</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="font-size: 0.95em; color: #7f8c8d;">Please enter the system password to continue</p>
                     <form id="form-login" style="margin-top: 2rem;">
                         <div class="form-group">
                             <label for="login-password">Password</label>
@@ -46,8 +70,14 @@
             <!-- Home Screen -->
             <div id="screen-home" class="screen">
                 <div class="welcome-card">
-                    <h2>Welcome to TCM CDSS</h2>
+                    <h2>Welcome to Longenix Health TCM CDSS</h2>
                     <p>Clinical Decision Support System for Traditional Chinese Medicine</p>
+                    
+                    <div style="background: #e8f5e9; border: 1px solid #4caf50; border-radius: 4px; padding: 12px; margin: 15px 0; font-size: 0.9em; text-align: left;">
+                        <strong style="color: #2e7d32;">📋 For Licensed Practitioners:</strong>
+                        <p style="margin: 8px 0 0 0; color: #33691e;">This system is a clinical decision support and educational tool designed for licensed Traditional Chinese Medicine practitioners. It does not replace clinical judgment or professional diagnosis.</p>
+                    </div>
+                    
                     <p><strong>Four Methods of TCM Diagnosis:</strong></p>
                     <ul style="text-align: left; display: inline-block; margin: 0 auto;">
                         <li>🔍 Observation (望 Wàng)</li>
