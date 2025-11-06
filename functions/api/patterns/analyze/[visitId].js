@@ -6,7 +6,7 @@ export async function onRequestPost(context) {
     const visitId = params.visitId;
     
     try {
-        // Fetch observations and interrogations
+        // Fetch all diagnostic data including chief complaint
         const { results: observations } = await env.DB.prepare(
             'SELECT * FROM observations WHERE visit_id = ?'
         ).bind(visitId).all();
@@ -14,6 +14,10 @@ export async function onRequestPost(context) {
         const { results: interrogations } = await env.DB.prepare(
             'SELECT * FROM interrogations WHERE visit_id = ?'
         ).bind(visitId).all();
+        
+        const chiefComplaint = await env.DB.prepare(
+            'SELECT * FROM chief_complaints WHERE visit_id = ?'
+        ).bind(visitId).first();
         
         // Parse data
         const obsData = {};
@@ -26,8 +30,8 @@ export async function onRequestPost(context) {
             intData[row.section] = JSON.parse(row.data);
         });
         
-        // Generate pattern matches
-        const patterns = analyzePatterns(obsData, intData);
+        // Generate pattern matches with chief complaint context
+        const patterns = analyzePatterns(obsData, intData, chiefComplaint);
         
         // Save analysis
         const now = new Date().toISOString();
@@ -52,9 +56,13 @@ export async function onRequestPost(context) {
     }
 }
 
-function analyzePatterns(observations, interrogations) {
+function analyzePatterns(observations, interrogations, chiefComplaint) {
     const patterns = [];
     let totalConfidence = 0;
+    
+    // Chief complaint provides additional diagnostic context
+    const chiefConcern = chiefComplaint?.primary_concern || '';
+    const westernDx = chiefComplaint?.western_conditions || '';
     
     // Pattern 1: Spleen Qi Deficiency
     let spleenQiScore = 0;
@@ -87,6 +95,13 @@ function analyzePatterns(observations, interrogations) {
     if (interrogations.digestion?.appetite === 'poor') {
         spleenQiScore += 10;
         spleenQiEvidence.push('Poor appetite indicates Spleen Qi deficiency');
+    }
+    
+    // Chief complaint influences for Spleen Qi Deficiency
+    const spleenKeywords = ['fatigue', 'tired', 'digestive', 'bloating', 'loose stool', 'diarrhea', 'weak', 'poor appetite'];
+    if (chiefConcern && spleenKeywords.some(kw => chiefConcern.toLowerCase().includes(kw))) {
+        spleenQiScore += 10;
+        spleenQiEvidence.push('Chief complaint aligns with Spleen Qi deficiency pattern');
     }
     
     if (spleenQiScore > 0) {
@@ -123,6 +138,13 @@ function analyzePatterns(observations, interrogations) {
         kidneyYangEvidence.push('Frequent clear urination indicates Kidney Yang deficiency');
     }
     
+    // Chief complaint influences for Kidney Yang Deficiency
+    const kidneyKeywords = ['cold', 'back pain', 'lower back', 'frequent urination', 'impotence', 'infertility', 'edema', 'swelling'];
+    if (chiefConcern && kidneyKeywords.some(kw => chiefConcern.toLowerCase().includes(kw))) {
+        kidneyYangScore += 10;
+        kidneyYangEvidence.push('Chief complaint aligns with Kidney Yang deficiency pattern');
+    }
+    
     if (kidneyYangScore > 0) {
         patterns.push({
             name: 'Kidney Yang Deficiency',
@@ -151,6 +173,13 @@ function analyzePatterns(observations, interrogations) {
     if (interrogations.sleep?.quality === 'poor' || interrogations.sleep?.difficulty === 'falling_asleep') {
         liverQiScore += 10;
         liverQiEvidence.push('Sleep difficulties may relate to Liver Qi stagnation');
+    }
+    
+    // Chief complaint influences for Liver Qi Stagnation
+    const liverKeywords = ['stress', 'anxiety', 'irritable', 'angry', 'insomnia', 'headache', 'chest tightness', 'depression', 'mood'];
+    if (chiefConcern && liverKeywords.some(kw => chiefConcern.toLowerCase().includes(kw))) {
+        liverQiScore += 10;
+        liverQiEvidence.push('Chief complaint aligns with Liver Qi stagnation pattern');
     }
     
     if (liverQiScore > 0) {

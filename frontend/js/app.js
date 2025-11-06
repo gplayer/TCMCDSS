@@ -1104,6 +1104,54 @@ class TCMApp {
             
             yPos = doc.lastAutoTable.finalY + 12;
             
+            // Chief Complaint Section
+            try {
+                const chiefComplaintData = await API.getChiefComplaint(this.currentVisit.id);
+                if (chiefComplaintData && chiefComplaintData.chief_complaint) {
+                    const cc = chiefComplaintData.chief_complaint;
+                    
+                    // Section Header
+                    doc.setFillColor(255, 152, 0);
+                    doc.rect(margin, yPos, contentWidth, 8, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('CHIEF COMPLAINT ASSESSMENT', margin + 3, yPos + 5.5);
+                    doc.setTextColor(0, 0, 0);
+                    yPos += 10;
+                    
+                    // Chief Complaint Table
+                    const ccData = [];
+                    if (cc.primary_concern) ccData.push(['Primary Concern:', cc.primary_concern]);
+                    if (cc.western_conditions) ccData.push(['Western Diagnosis:', cc.western_conditions]);
+                    if (cc.recent_symptoms) ccData.push(['Recent Symptoms:', cc.recent_symptoms]);
+                    
+                    if (ccData.length > 0) {
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [],
+                            body: ccData,
+                            theme: 'plain',
+                            styles: { 
+                                fontSize: 10, 
+                                cellPadding: 3,
+                                lineColor: [200, 200, 200],
+                                lineWidth: 0.1
+                            },
+                            columnStyles: {
+                                0: { fontStyle: 'bold', cellWidth: 45, fillColor: [255, 243, 224] },
+                                1: { cellWidth: 'auto' }
+                            },
+                            margin: { left: margin, right: margin }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 12;
+                    }
+                }
+            } catch (error) {
+                console.log('No chief complaint data available');
+            }
+            
             // Observation Data with Professional Tables
             if (Object.keys(this.observationData).length > 0) {
                 // Module Header
