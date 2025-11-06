@@ -1,7 +1,7 @@
 // Main Application Logic - With Module 1 & 2 Integration
 class TCMApp {
     constructor() {
-        this.currentScreen = 'home';
+        this.currentScreen = 'login';
         this.currentPatient = null;
         this.currentVisit = null;
         this.currentModule = null; // 'observation' or 'interrogation'
@@ -11,16 +11,21 @@ class TCMApp {
         this.completedSectionsObs = new Set();
         this.completedSectionsInt = new Set();
         this.completedModules = new Set();
+        this.isAuthenticated = false;
+        this.systemPassword = '#*TCMcdss42'; // System password
         
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.showScreen('home');
+        this.showScreen('login');
     }
 
     setupEventListeners() {
+        // Login form
+        document.getElementById('form-login').addEventListener('submit', (e) => this.handleLogin(e));
+
         // Home screen
         document.getElementById('btn-new-patient').addEventListener('click', () => this.showScreen('new-patient'));
         document.getElementById('btn-existing-patient').addEventListener('click', () => this.loadPatients());
@@ -57,7 +62,29 @@ class TCMApp {
         document.getElementById('btn-new-visit').addEventListener('click', () => this.showScreen('home'));
     }
 
+    handleLogin(e) {
+        e.preventDefault();
+        const password = document.getElementById('login-password').value;
+        const errorDiv = document.getElementById('login-error');
+        
+        if (password === this.systemPassword) {
+            this.isAuthenticated = true;
+            errorDiv.style.display = 'none';
+            this.showScreen('home');
+            document.getElementById('login-password').value = ''; // Clear password field
+        } else {
+            errorDiv.style.display = 'block';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-password').focus();
+        }
+    }
+
     showScreen(screenId) {
+        // Prevent access to screens without authentication
+        if (!this.isAuthenticated && screenId !== 'login') {
+            return;
+        }
+        
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(`screen-${screenId}`).classList.add('active');
         this.currentScreen = screenId;

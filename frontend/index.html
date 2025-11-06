@@ -19,8 +19,32 @@
 
         <!-- Main Content Area -->
         <main class="app-main">
+            <!-- Login Screen -->
+            <div id="screen-login" class="screen active">
+                <div class="welcome-card" style="max-width: 400px; margin: 0 auto;">
+                    <h2>🔐 TCM CDSS Login</h2>
+                    <p>Please enter the system password to continue</p>
+                    <form id="form-login" style="margin-top: 2rem;">
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required 
+                                   placeholder="Enter password" 
+                                   style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                        </div>
+                        <div id="login-error" style="color: #e74c3c; margin-top: 0.5rem; display: none;">
+                            Incorrect password. Please try again.
+                        </div>
+                        <div class="form-actions" style="margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Home Screen -->
-            <div id="screen-home" class="screen active">
+            <div id="screen-home" class="screen">
                 <div class="welcome-card">
                     <h2>Welcome to TCM CDSS</h2>
                     <p>Clinical Decision Support System for Traditional Chinese Medicine</p>
