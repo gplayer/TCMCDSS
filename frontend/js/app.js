@@ -130,14 +130,22 @@ class TCMApp {
         if (patients.length === 0) {
             container.innerHTML = '<p>No patients found. Create a new patient to get started.</p>';
         } else {
-            container.innerHTML = patients.map(p => `
+            container.innerHTML = patients.map(p => {
+                const dob = p.date_of_birth ? new Date(p.date_of_birth).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                }) : 'Not provided';
+                const gender = p.gender ? p.gender.charAt(0).toUpperCase() + p.gender.slice(1) : 'Not specified';
+                
+                return `
                 <div class="patient-card" onclick="app.selectPatient(${p.id})">
-                    <div class="patient-name">${p.name}</div>
-                    <div class="patient-info">
-                        ${p.gender ? p.gender : ''} ${p.date_of_birth ? '• DOB: ' + p.date_of_birth : ''}
-                    </div>
+                    <div class="patient-name">👤 ${p.name}</div>
+                    <div class="patient-info"><strong>DOB:</strong> ${dob}</div>
+                    <div class="patient-info"><strong>Gender:</strong> ${gender}</div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         list.style.display = 'block';
