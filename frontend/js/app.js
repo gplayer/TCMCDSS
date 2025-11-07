@@ -898,22 +898,23 @@ class TCMApp {
         /**
          * Render TCM Profile in the specified container
          */
-        if (!profile || profile.data_completeness === 0) {
+        if (!profile || profile.diagnostic_confidence === 0) {
             container.innerHTML = '<p class="tcm-profile-empty">Complete data collection to generate TCM profile</p>';
             return;
         }
 
         let html = '';
 
-        // Data Completeness
+        // Diagnostic Confidence
+        const confidence = profile.diagnostic_confidence || 0;
         html += `
             <div class="tcm-section">
-                <div class="tcm-section-title">Data Completeness</div>
+                <div class="tcm-section-title">Diagnostic Confidence</div>
                 <div class="tcm-completeness">
                     <div class="tcm-completeness-bar">
-                        <div class="tcm-completeness-fill" style="width: ${profile.data_completeness}%"></div>
+                        <div class="tcm-completeness-fill" style="width: ${confidence}%"></div>
                     </div>
-                    <div class="tcm-completeness-text">${profile.data_completeness}%</div>
+                    <div class="tcm-completeness-text">${confidence}%</div>
                 </div>
             </div>
         `;
@@ -963,15 +964,14 @@ class TCMApp {
         }
 
         // Qi/Blood/Fluids
-        if (profile.qi_blood_fluids) {
-            const qbf = profile.qi_blood_fluids;
+        if (profile.qi_blood_fluids && profile.qi_blood_fluids.length > 0) {
             html += `
                 <div class="tcm-section">
                     <div class="tcm-section-title">Qi / Blood / Fluids</div>
                     <div class="tcm-badges">
-                        <span class="tcm-badge tcm-badge-neutral">Qi: ${qbf.qi}</span>
-                        <span class="tcm-badge tcm-badge-neutral">Blood: ${qbf.blood}</span>
-                        <span class="tcm-badge tcm-badge-neutral">Fluids: ${qbf.fluids}</span>
+                        ${profile.qi_blood_fluids.map(item => 
+                            `<span class="tcm-badge tcm-badge-neutral">${item}</span>`
+                        ).join('')}
                     </div>
                 </div>
             `;
