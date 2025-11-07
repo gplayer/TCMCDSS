@@ -883,7 +883,7 @@ class TCMApp {
         this.showLoading(true);
         try {
             const response = await API.getTCMProfile(this.currentVisit.id);
-            const profile = response.tcm_profile;
+            const profile = response.profile || response.tcm_profile;
             
             this.displayTCMProfile(profile, container);
         } catch (error) {
