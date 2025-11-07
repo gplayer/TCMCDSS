@@ -863,6 +863,11 @@ class TCMApp {
                         
                         <h4>Recommended Acupuncture Points:</h4>
                         <p>${pattern.acupuncture_points || 'No specific points recommended'}</p>
+                        
+                        ${pattern.dietary_advice ? `
+                        <h4>Dietary & Lifestyle Advice:</h4>
+                        <p>${pattern.dietary_advice}</p>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -1450,6 +1455,9 @@ class TCMApp {
                         }
                         if (pattern.acupuncture_points) {
                             patternDetails.push(['Key Acupuncture Points', pattern.acupuncture_points]);
+                        }
+                        if (pattern.dietary_advice) {
+                            patternDetails.push(['Dietary & Lifestyle Advice', pattern.dietary_advice]);
                         }
                         
                         if (patternDetails.length > 0) {
